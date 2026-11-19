@@ -104,6 +104,35 @@ def request_json(url: str) -> object:
             raise RuntimeError(f"HTTP {response.status}")
         return json.load(response)
 
+
+def _salary_range(value: object, *, fields: tuple[str, str, str, str]) -> dict | None:
+    """Return a source-reported salary range only, never guess currency/period."""
+    if not isinstance(value, dict):
+        return None
+    low, high, currency, period = (value.get(key) for key in fields)
+    if low is None and high is None:
+        return None
+    if not isinstance(low, (int, float, type(None))) or isinstance(low, bool):
+        return None
+    if not isinstance(high, (int, float, type(None))) or isinstance(high, bool):
+        return None
+    if not currency or not period:
+        return None
+    return {"min": low, "max": high, "currency": str(currency),
+            "period": str(period)}
+
+
+def _ashby_salary(value: object) -> dict | None:
+    if not isinstance(value, dict):
+        return None
+    salary = [c for c in value.get("summaryComponents", [])
+              if isinstance(c, dict) and c.get("compensationType") == "Salary"]
+    # With multiple salary components, do not pretend that the first one
+    # necessarily applies to every location or employment arrangement.
+    if len(salary) != 1:
+        return None
+    return _salary_range(salary[0], fields=("minValue", "maxValue", "currencyCode", "interval"))
+
 def fetch_board(board: dict) -> list[dict]:
     """Fetch publicly listed jobs; board names are explicitly configured by the operator."""
     provider = board["provider"].lower()
@@ -119,6 +148,10 @@ def fetch_board(board: dict) -> list[dict]:
                      company=company, title=x.get("title", ""),
                      location=(x.get("location") or {}).get("name", ""),
                      url=x.get("absolute_url", ""),
+                     posted_at=x.get("first_published"),
+                     posted_at_kind="first_published",
+                     application_deadline=None,
+                     salary=None,
                      description=x.get("content") or "") for x in items]
     if provider == "lever":
         items = request_json(f"https://api.lever.co/v0/postings/{safe}?mode=json")
@@ -141,13 +174,23 @@ def fetch_board(board: dict) -> list[dict]:
                                company=company, title=x.get("text", ""),
                                location=(x.get("categories") or {}).get("location", ""),
                                url=x.get("hostedUrl", ""),
+                               # createdAt is a record creation date, NOT publication.
+                               source_created_at=x.get("createdAt"),
+                               posted_at=None,
+                               application_deadline=None,
+                               salary=_salary_range(x.get("salaryRange"),
+                                   fields=("min", "max", "currency", "interval")),
                                description=" ".join(parts)))
         return output
     if provider == "ashby":
-        data = request_json(f"https://api.ashbyhq.com/posting-api/job-board/{safe}")
+        data = request_json(f"https://api.ashbyhq.com/posting-api/job-board/{safe}?includeCompensation=true")
         return [dict(source=f"ashby:{slug}", source_id=str(x.get("id") or x.get("jobUrl") or x.get("title")),
                      company=company, title=x.get("title", ""),
                      location=x.get("location") or "", url=x.get("jobUrl") or x.get("applyUrl") or "",
+                     posted_at=x.get("publishedAt"),
+                     posted_at_kind="last_published",
+                     application_deadline=None,
+                     salary=_ashby_salary(x.get("compensation")),
                      description=x.get("descriptionPlain") or "")
                 for x in data.get("jobs", []) if x.get("isListed", True)]
     raise ValueError(f"Unsupported provider: {provider}")
