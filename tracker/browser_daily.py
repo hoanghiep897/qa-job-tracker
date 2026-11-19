@@ -19,7 +19,19 @@ def run(config: str, output: str, platform: str = "itviec",
     previous = json.loads(target.read_text(encoding="utf-8")) if target.exists() else None
     # build_dataset retains previously observed source records; on total failure
     # it raises without writing or losing the last successful snapshot.
-    result = build_dataset(eligible, previous=previous, fetch=fetch)
+    errors = []
+    def report_errors(board):
+        try:
+            return fetch(board)
+        except Exception as exc:
+            errors.append(f"{board['provider']}: {exc}")
+            raise
+    try:
+        result = build_dataset(eligible, previous=previous, fetch=report_errors)
+    except RuntimeError as exc:
+        if errors:
+            raise RuntimeError("Browser collection failed: " + "; ".join(errors)) from exc
+        raise
     if result["sources_failed"]:
         raise RuntimeError("Browser collection failed: " + "; ".join(
             f'{x["source"]}: {x["error"]}' for x in result["sources_failed"]))
