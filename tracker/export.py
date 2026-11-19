@@ -50,6 +50,10 @@ def public_job(item: dict, observed_at: str) -> dict:
         "first_seen": observed_at,
         "last_seen": observed_at,
         "status": "observed",
+        "posted_at": item.get("posted_at") or None,
+        "posted_at_kind": item.get("posted_at_kind") or None,
+        "application_deadline": item.get("application_deadline") or None,
+        "salary": item.get("salary") if isinstance(item.get("salary"), dict) else None,
     }
 
 def build_dataset(boards: list[dict], previous: dict | None = None, fetch=fetch_board,
@@ -80,6 +84,10 @@ def build_dataset(boards: list[dict], previous: dict | None = None, fetch=fetch_
                 old = existing.get(key)
                 if old:
                     job["first_seen"] = old.get("first_seen") or today
+                    # Preserve verified source metadata if the source later omits it.
+                    for field in ("posted_at", "posted_at_kind", "application_deadline", "salary"):
+                        if job[field] is None and old.get(field) is not None:
+                            job[field] = old[field]
                 merged[key] = job
         except Exception as exc:
             failures.append({"source": name, "error": str(exc)[:180]})
