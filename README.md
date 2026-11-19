@@ -62,3 +62,30 @@ python -m unittest discover -s tests -v
 - SQLite lives on your machine; do **not** assume the database persists across free ephemeral cloud deployments.
 - Reports and scheduled collection are planned later, after validating real-source data.
 - Demo jobs are synthetic and labeled separately.
+
+## Online dashboard (static / Vercel)
+
+The root `index.html` is an additional **static dashboard** that can run on Vercel's free Hobby tier. It uses synthetic example jobs by default; CSV data is parsed and analyzed **in your browser**, never uploaded to a server. The CSV columns are `title,company,location,description,source,source_id,url` (only `title` is necessary for browser analysis). Skills are keyword-based, not AI-generated.
+
+The static dashboard is **not** the Streamlit service, has **no hosted SQLite database**, and does **not** automatically collect jobs or retain uploaded CSV after refresh. The Python/SQLite collector still runs separately on your machine. Do not assume online data persists or auto-refreshes. The two entrypoints are intentionally separate to avoid ongoing cloud costs.
+
+Production publishing is via Vercel Git integration from `main`. Deploying `index.html` needs no framework build and no server-side secrets. For a future live shared dashboard, use an approved persistent source such as a managed database or generated aggregated JSON committed by an authorized scheduled workflow.
+
+## v0.2 — scheduled public job-feed snapshots
+
+The dashboard first tries to read `data/jobs.json` from the repository's `main` branch on GitHub Raw. If there are no records or the request fails, the page uses three **clearly labeled synthetic examples**. CSV uploads are still processed only in your browser.
+
+The daily GitHub Actions workflow `Collect public QA jobs` runs at **03:15 UTC (10:15 Vietnam time)** and can be started manually from Actions → Collect public QA jobs → Run workflow. A first collection is also triggered by changes to its configuration when pushed to `main`. It publishes a compact JSON containing job title, company, location, URL, source and keyword-derived skills, **not full JD text**.
+
+Initial boards (public ATS job feeds): NAVER VIETNAM, what3words, Backbase, BTSE, Colonist. They were selected because their public careers sites have had Vietnam or Southeast Asia-relevant QA roles; currently available positions and successful API access are **not guaranteed**. Review `config/boards.json` to disable any feed if collection is not authorized. Follow the individual source's terms and respect access restrictions and limits.
+
+Dashboard trends cover **only configured, successfully observed boards**, including remote/region-wide positions; they are not a national labour-market estimate. Data may be outdated when a source is unreachable. A posting's `first_seen` means observation time, not original listing date. Different sites may have duplicate vacancies. `status=not_verified_this_run` means absence from a successfully refreshed feed and is not proof of closure.
+
+The collector intentionally keeps old records across runs and refuses to overwrite the snapshot if every feed fails. GitHub is used as storage within repository size and Actions quotas; no cloud database or LLM API is required. The Vercel project is currently deployed manually because its GitHub integration is not connected. Dataset changes propagate through GitHub Raw automatically when the site is loaded, but **UI code changes still need a deployment** until Vercel Git integration is connected.
+
+Run locally:
+
+```bash
+python -m tracker.export --config config/boards.json --output data/jobs.json
+python -m unittest discover -s tests -v
+```

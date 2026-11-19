@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "updated_at": null,
+  "scope": "Selected public job boards; initial empty dataset until first successful collector run",
+  "sources_succeeded": [],
+  "sources_failed": [],
+  "source_records_read": 0,
+  "jobs": []
+}
