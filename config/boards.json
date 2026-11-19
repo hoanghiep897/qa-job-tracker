@@ -1,4 +1,32 @@
 [
-  {"provider": "greenhouse", "board": "gitlab", "company": "GitLab", "enabled": true},
-  {"provider": "ashby", "board": "linear", "company": "Linear", "enabled": true}
+  {
+    "provider": "greenhouse",
+    "board": "navervietnam",
+    "company": "NAVER VIETNAM",
+    "enabled": true
+  },
+  {
+    "provider": "ashby",
+    "board": "what3words",
+    "company": "what3words",
+    "enabled": true
+  },
+  {
+    "provider": "greenhouse",
+    "board": "workatbackbase",
+    "company": "Backbase",
+    "enabled": true
+  },
+  {
+    "provider": "lever",
+    "board": "BTSE",
+    "company": "BTSE",
+    "enabled": true
+  },
+  {
+    "provider": "ashby",
+    "board": "colonist",
+    "company": "Colonist",
+    "enabled": true
+  }
 ]
