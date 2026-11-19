@@ -76,12 +76,12 @@ function formatSalary(s){
  const range=low!==null&&high!==null?n(low)+"–"+n(high):low!==null?"Từ "+n(low):"Đến "+n(high);
  return range+" "+currency+"/"+period;
 }
-function render(){const data=selectedJobs();$("#jobs").textContent=data.length;$("#companies").textContent=new Set(data.map(j=>j.company)).size;$("#sources").textContent=new Set(data.map(j=>j.source)).size;$("#auto").textContent=(data.length?Math.round(data.filter(j=>["SDET","Automation QA"].includes(j.role)).length/data.length*100):0)+"%";barChart("#regions",counts(data.map(j=>j.market_region)));barChart("#roles",counts(data.map(j=>j.role)));barChart("#skills",counts(data.flatMap(j=>j.skills)));const body=$("#records");body.replaceChildren();data.slice(0,500).forEach(j=>{const tr=document.createElement("tr");for(const v of [j.title,j.company,j.location,j.role,formatSalary(j.salary),formatPosted(j),formatDate(j.application_deadline),j.skills.join(", ")]){const td=document.createElement("td");td.textContent=v||"—";tr.append(td)}const td=document.createElement("td");if(/^https:\/\//i.test(j.url||"")){const a=document.createElement("a");a.href=j.url;a.target="_blank";a.rel="noopener noreferrer";a.textContent=j.source||"Mở JD";td.append(a)}else td.textContent=j.source||"—";tr.append(td);body.append(tr)});$("#dataStatus").textContent=isDemo?"Đang dùng 3 bản ghi ví dụ (DEMO).":"Đang dùng "+all.length+" bản ghi từ CSV tải lên cục bộ."}
+function render(){const data=selectedJobs();$("#jobs").textContent=data.length;$("#companies").textContent=new Set(data.map(j=>j.company)).size;$("#sources").textContent=new Set(data.map(j=>j.source)).size;$("#auto").textContent=(data.length?Math.round(data.filter(j=>["SDET","Automation QA"].includes(j.role)).length/data.length*100):0)+"%";barChart("#regions",counts(data.map(j=>j.market_region)));barChart("#roles",counts(data.map(j=>j.role)));barChart("#skills",counts(data.flatMap(j=>j.skills)));const body=$("#records");body.replaceChildren();data.slice(0,500).forEach(j=>{const tr=document.createElement("tr");for(const v of [j.title,j.company,j.location,j.role,(j.salary_text||formatSalary(j.salary)),formatPosted(j),formatDate(j.application_deadline),j.skills.join(", ")]){const td=document.createElement("td");td.textContent=v||"—";tr.append(td)}const td=document.createElement("td");if(/^https:\/\//i.test(j.url||"")){const a=document.createElement("a");a.href=j.url;a.target="_blank";a.rel="noopener noreferrer";a.textContent=j.source||"Mở JD";td.append(a)}else td.textContent=j.source||"—";tr.append(td);body.append(tr)});$("#dataStatus").textContent=isDemo?"Đang dùng 3 bản ghi ví dụ (DEMO).":"Đang dùng "+all.length+" bản ghi từ CSV tải lên cục bộ."}
 $("#role").addEventListener("change",render);$("#location").addEventListener("change",render);$("#region").addEventListener("change",render);$("#age").addEventListener("change",render);
 $("#reset").onclick=()=>{all=demo.map(j=>({...enrich(j),market_region:marketRegion(j.location)}));isDemo=true;$("#csv").value="";$("#region").value="";$("#age").value="0";$("#notice").style.display="block";populate();render()};
 $("#csv").onchange=async e=>{const f=e.target.files[0];if(!f)return;try{if(f.size>5e6)throw Error("Tệp CSV quá lớn (tối đa 5 MB)");const rows=csvParse((await f.text()).replace(/^\uFEFF/,""));if(rows.length<2)throw Error("CSV không có dòng dữ liệu");const head=rows.shift().map(h=>h.trim().toLowerCase());if(!head.includes("title"))throw Error("CSV thiếu cột title");const items=rows.map((vals,i)=>{const obj={};head.forEach((k,j)=>obj[k]=vals[j]||"");obj.source||="csv";obj.source_id||=String(i+1);obj.company||="Unknown";return obj}).filter(x=>x.title.trim()).map(enrich);if(!items.length)throw Error("Không có JD hợp lệ");all=items.map(j=>({...j,market_region:marketRegion(j.location),salary:parseSalaryCsv(j)}));isDemo=false;$("#notice").style.display="none";populate();render()}catch(err){alert("Không thể đọc CSV: "+err.message);e.target.value=""}};
 function escapeCsv(x){const s=String(x??"");return /[",\r\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s}
-$("#export").onclick=()=>{const data=selectedJobs();const keys=["source","source_id","company","title","location","description","url","role","skills","posted_at","application_deadline","salary"];const text=[keys.join(","),...data.map(j=>keys.map(k=>escapeCsv(k==="skills"?j.skills.join("; "):k==="salary"?formatSalary(j.salary):j[k])).join(","))].join("\r\n");const blob=new Blob(["\uFEFF"+text],{type:"text/csv;charset=utf-8"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="qa_jobs_filtered.csv";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};
+$("#export").onclick=()=>{const data=selectedJobs();const keys=["source","source_id","company","title","location","description","url","role","skills","posted_at","application_deadline","salary","salary_text"];const text=[keys.join(","),...data.map(j=>keys.map(k=>escapeCsv(k==="skills"?j.skills.join("; "):k==="salary"?(j.salary_text||formatSalary(j.salary)):j[k])).join(","))].join("\r\n");const blob=new Blob(["\uFEFF"+text],{type:"text/csv;charset=utf-8"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="qa_jobs_filtered.csv";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};
 populate();render();
 async function loadPublishedJobs(){
   try{
@@ -103,6 +103,7 @@ async function loadPublishedJobs(){
       posted_at_kind:j.posted_at_kind||null,
       application_deadline:j.application_deadline||null,
       salary:j.salary||null,
+      salary_text:String(j.salary_text||""),
       market_region:marketRegion(j.location||""),
       skills:Array.isArray(j.skills)?j.skills.filter(x=>typeof x==="string"):[]
     }));
@@ -110,8 +111,8 @@ async function loadPublishedJobs(){
     $("#notice").style.display="none";
     populate();render();
     const updated=payload.updated_at?new Date(payload.updated_at).toLocaleString("vi-VN"):"Chưa rõ";
-    $("#dataStatus").textContent=all.length+" bản ghi JD đã quan sát từ các nguồn ATS công khai · Cập nhật: "+updated+
-      " · "+(payload.sources_succeeded||[]).length+" nguồn đồng bộ thành công"+
+    $("#dataStatus").textContent=all.length+" bản ghi JD tổng hợp từ Google Sheets và ATS · Cập nhật: "+updated+
+      " · "+new Set(all.map(j=>j.source)).size+" nguồn tuyển dụng"+
       (payload.sources_failed?.length?" · "+payload.sources_failed.length+" nguồn lỗi":"")+
       " · Không đại diện toàn bộ thị trường";
   }catch(err){console.warn("Cannot read published dataset:",err)}

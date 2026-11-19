@@ -216,3 +216,11 @@ Manual local run (CSV-public sheet or configured service-account environment):
 ```bash
 python -m tracker.google_sheet_sync --config config/google_sheet.json --output data/jobs.json
 ```
+
+### Actual November 19 Sheet columns, salary and board source mapping
+
+The live spreadsheet's first-tab columns are `Nguồn`, `Vị trí`, `Công ty`, `Lương / Budget`, `Địa điểm`, `Kinh nghiệm / Level`, `Skill yêu cầu (cho CV)`, `Ngày đăng (tính từ 19/11/2026)`, and `Link`. The owner-controlled sheet contains TopCV, ITviec, and Upwork links (43, 20 and 9 rows when inspected on 19 November 2026). These counts are observations, not a promise of currently open roles.
+
+The importer now detects `Lương / Budget` and preserves **raw salary text verbatim**, including values such as `18 - 24 triệu` or `Thoả thuận`. No monetary interpretation or invented ranges are made. The browser's `Mức lương` column displays the raw value when available and falls back to structured numeric salary. The `Nguồn` field is derived from each row's validated job link hostname (**TopCV**, **ITviec**, **Upwork**, or the normalized domain for other sources); clicking its label opens the exact JD link. The `Skill yêu cầu (cho CV)` field contributes to keyword skill tags, without republishing the entire original content.
+
+This rollout migrates previously ingested generic `google_sheet:daily` source records to their proper job-board source, keeping the original first-observed time and preventing duplicate JDs from the same URL. Google Sheet provenance remains in `ingested_from`. Relative source posting timestamps (e.g. `2 ngày trước`) are **not converted to calendar dates** without a verified reference point. The 07:00 ICT schedule remains unchanged.
