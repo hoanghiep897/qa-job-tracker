@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-19T09:30:18+00:00",
+  "updated_at": "2026-11-19T10:32:58+00:00",
   "scope": "Selected public job boards; not representative of the whole market",
   "sources_succeeded": [
     "greenhouse:navervietnam",
@@ -51,7 +51,7 @@
         "AI / LLM"
       ],
       "first_seen": "2026-11-19T09:16:38+00:00",
-      "last_seen": "2026-11-19T09:30:18+00:00",
+      "last_seen": "2026-11-19T10:32:58+00:00",
       "status": "observed",
       "posted_at": null,
       "posted_at_kind": null,
@@ -73,7 +73,7 @@
         "JavaScript"
       ],
       "first_seen": "2026-11-19T09:16:38+00:00",
-      "last_seen": "2026-11-19T09:30:18+00:00",
+      "last_seen": "2026-11-19T10:32:58+00:00",
       "status": "observed",
       "posted_at": null,
       "posted_at_kind": null,
@@ -99,7 +99,7 @@
         "SQL"
       ],
       "first_seen": "2026-11-19T09:17:30+00:00",
-      "last_seen": "2026-11-19T09:30:18+00:00",
+      "last_seen": "2026-11-19T10:32:58+00:00",
       "status": "observed",
       "posted_at": null,
       "posted_at_kind": null,
@@ -127,7 +127,7 @@
         "AI / LLM"
       ],
       "first_seen": "2026-11-19T08:48:38+00:00",
-      "last_seen": "2026-11-19T09:30:18+00:00",
+      "last_seen": "2026-11-19T10:32:58+00:00",
       "status": "observed",
       "posted_at": null,
       "posted_at_kind": null,
@@ -152,7 +152,7 @@
         "k6"
       ],
       "first_seen": "2026-11-19T08:48:38+00:00",
-      "last_seen": "2026-11-19T09:30:18+00:00",
+      "last_seen": "2026-11-19T10:32:58+00:00",
       "status": "observed",
       "posted_at": null,
       "posted_at_kind": null,
@@ -177,7 +177,7 @@
         "JMeter"
       ],
       "first_seen": "2026-11-19T08:48:38+00:00",
-      "last_seen": "2026-11-19T09:30:18+00:00",
+      "last_seen": "2026-11-19T10:32:58+00:00",
       "status": "observed",
       "posted_at": null,
       "posted_at_kind": null,
@@ -204,7 +204,7 @@
         "GitHub Actions"
       ],
       "first_seen": "2026-11-19T08:47:41+00:00",
-      "last_seen": "2026-11-19T09:30:18+00:00",
+      "last_seen": "2026-11-19T10:32:58+00:00",
       "status": "observed",
       "posted_at": "2026-10-13T01:22:45-04:00",
       "posted_at_kind": "first_published",
@@ -226,7 +226,7 @@
         "Cypress"
       ],
       "first_seen": "2026-11-19T08:47:41+00:00",
-      "last_seen": "2026-11-19T09:30:18+00:00",
+      "last_seen": "2026-11-19T10:32:58+00:00",
       "status": "observed",
       "posted_at": "2026-04-16T18:02:11.394+00:00",
       "posted_at_kind": "last_published",
