@@ -105,3 +105,11 @@ The **JD Explorer** includes **Mức lương**, **Ngày đăng**, and **Hạn �
 - `salary` requires a published numeric range with currency and pay interval. Displayed as reported, without conversion. Multicomponent/ambiguous compensation is omitted. Missing values display `Không công bố`; they do not imply an employer offers no compensation.
 - CSV uploads may include `posted_at`, `application_deadline`, `salary_min`, `salary_max`, `salary_currency`, `salary_period`. These must be sourced from actual job advertisements.
 - New ATS fields populate on the next successful scheduled collection; historical records without source metadata remain blank. No paid API/database required.
+
+## v0.5 — More Vietnam-relevant company career sources
+
+New configured public ATS boards: **Aperia Solutions (Greenhouse)**, **ShopBack (Lever)**, and **Agility IO (Ashby)**. They join the five existing sources. These are **company-owned recruitment boards**, not ITviec/TopCV/LinkedIn scrapers. Some sources may currently have no QA postings or may change their public endpoints; successful live retrieval is checked by GitHub Actions after merging.
+
+**ITviec, TopCV, VietnamWorks, TopDev and LinkedIn are NOT scraped by this application.** Search pages being public does not by itself authorize systematic copying and republishing. ITviec's terms may require prior written permission for automated collection. Integration with these services requires a license, approved API/feed, or another authorized method. No CAPTCHA evasion, logged-in scraping or rotating proxy systems are included.
+
+Use `config/boards.json` to disable any source if its permissions change. At most one request is made to each public ATS endpoint per collection. Publication on the dashboard is still limited to title, company, location, URL, source, observed timestamps and extracted skills; original full JD text is not republished. The sample remains **non-representative** of Vietnam's QA labor market.
