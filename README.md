@@ -158,3 +158,15 @@ The scheduled Chromium workflow now tries **TopCV** and **VietnamWorks**, separa
 ## Live browser pilot result (19 November 2026)
 
 The GitHub-hosted Chromium run [44508413945](https://github.com/hoanghiep897/qa-job-tracker/actions/runs/44508413945) found TopCV HTTP 403; VietnamWorks robots.txt returned HTTP 404, leaving its access policy unverified. No new JD were collected from these sites. ITviec previously returned HTTP 403. The browser workflow has been **paused as a daily scheduled job** after these failures to avoid repeated unsuccessful requests; it remains manually runnable (workflow_dispatch) and on code/configuration changes for diagnostics. The separate working ATS daily collector still runs normally. Re-enable scheduling after approved access or a verified API/feed is available.
+
+## TechJobs public feed proof of concept (read-only)
+
+The experimental `tracker/techjobs_probe.py` inspects **https://techjobs.vn/feeds/jobs.json** to evaluate the number of live QA/Tester/SDET/QC job titles in Vietnam-relevant employer postings. Feed documentation: https://techjobs.vn/feeds/openapi.json. The source's operator describes a feed-specific automated indexing exception in the terms at https://techjobs.vn/terms, with TechJobs credit and the original employer apply link required for redistribution. **This proof of concept deliberately does not redistribute, store, or publish any job details.**
+
+It searches six terms (`qa`, `tester`, `sdet`, `kiểm thử`, `qc`, `automation`), takes at most two 200-record pages per term, waits at least two seconds between requests, and prints only counts to GitHub Actions. Counts deduplicate by feed job ID, but title-based QA/QC matches can also include roles outside software testing. Search result totals and partial pages are not a whole-market estimate.
+
+Run manually from GitHub Actions → **TechJobs feed QA coverage probe (read only)** → Run workflow. A first smoke test triggers when the workflow is merged into main. No key, paid plan, database, browser or deployment required; the workflow has `contents: read` permissions and **never modifies `data/jobs.json`**. The separate ATS collector continues to run daily.
+
+Run locally: `python -m tracker.techjobs_probe --max-pages 2 --per-page 200`.
+
+Next steps after evaluating the live response: review the TechJobs feed terms against the intended public dashboard, retain both source attribution and original employer apply link, add explicit opt-in adapter and cross-source deduplication, and only then enable automatic publishing. If GitHub-hosted runners receive 403/429, stop rather than attempting evasion.
