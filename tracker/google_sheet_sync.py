@@ -8,13 +8,15 @@ from __future__ import annotations
 
 import argparse
 import csv
+import calendar
 import hashlib
 import io
 import json
 import os
 import re
 import unicodedata
-from datetime import datetime
+from datetime import datetime, timedelta, time
+from zoneinfo import ZoneInfo
 from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.parse import quote, urlencode, urlsplit, urlunsplit, parse_qsl
@@ -27,6 +29,8 @@ SOURCE_NAMES = {"topcv.vn": "TopCV", "itviec.com": "ITviec", "upwork.com": "Upwo
                 "vietnamworks.com": "VietnamWorks", "careerbuilder.vn": "CareerViet"}
 MAX_CSV_BYTES = 6_000_000
 MAX_ROWS = 5000
+VIETNAM_TZ = ZoneInfo("Asia/Ho_Chi_Minh")
+SHEET_CAPTURE_HOUR = 6  # owner manually updates at 06:00 local time
 SHEET_ID_RE = re.compile(r"^[A-Za-z0-9_-]{20,120}$")
 HEADERS = {
     "title": ("title", "job title", "ten vi tri", "vi tri", "vi tri tuyen dung",
@@ -239,6 +243,65 @@ def format_date(value: str) -> str | None:
     return None
 
 
+def capture_reference_at(*, now: datetime | None = None) -> datetime:
+    """The 06:00 ICT snapshot on the local date the sheet is synchronized.
+
+    GitHub cron runs around 07:00 ICT. We intentionally never use the GitHub
+    runner's UTC clock hour as the baseline.
+    """
+    current = now or datetime.now(VIETNAM_TZ)
+    if current.tzinfo is None or current.utcoffset() is None:
+        raise ValueError("capture reference requires a timezone-aware datetime")
+    local_date = current.astimezone(VIETNAM_TZ).date()
+    return datetime.combine(local_date, time(SHEET_CAPTURE_HOUR, 0),
+                            tzinfo=VIETNAM_TZ)
+
+
+def relative_posted_at(raw: str, *, reference: datetime) -> str | None:
+    """Convert English/Vietnamese relative postings to estimated ISO time.
+
+    Output is marked estimated by the importer; preserve raw text as evidence.
+    Month/year offsets use calendar arithmetic and are likewise approximate.
+    """
+    txt = norm(raw)
+    if txt in ("dang hom nay", "hom nay", "posted today", "today",
+               "posted just now", "just posted", "vua dang"):
+        return reference.isoformat()
+    if txt in ("dang hom qua", "hom qua", "posted yesterday", "yesterday"):
+        return (reference - timedelta(days=1)).isoformat()
+    m = re.fullmatch(
+        r"(?:posted\s+|dang\s+)?(\d+)\s+"
+        r"(minutes?|mins?|phut|hours?|hrs?|gio|days?|ngay|"
+        r"weeks?|tuan|months?|thang|years?|nam)"
+        r"(?:\s+(?:ago|truoc))?",
+        txt,
+    )
+    if not m:
+        return None
+    count = int(m.group(1))
+    if count > 3650:  # guard against erroneous units or an unbounded offset
+        return None
+    unit = m.group(2)
+    if unit in ("minute", "minutes", "min", "mins", "phut"):
+        timestamp = reference - timedelta(minutes=count)
+    elif unit in ("hour", "hours", "hr", "hrs", "gio"):
+        timestamp = reference - timedelta(hours=count)
+    elif unit in ("day", "days", "ngay"):
+        timestamp = reference - timedelta(days=count)
+    elif unit in ("week", "weeks", "tuan"):
+        timestamp = reference - timedelta(weeks=count)
+    else:
+        months = count * (12 if unit in ("year", "years", "nam") else 1)
+        target_month = reference.year * 12 + reference.month - 1 - months
+        if target_month < 1:
+            return None
+        year, month_zero = divmod(target_month, 12)
+        month = month_zero + 1
+        day = min(reference.day, calendar.monthrange(year, month)[1])
+        timestamp = reference.replace(year=year, month=month, day=day)
+    return timestamp.isoformat()
+
+
 def safe_salary(row: dict) -> dict | None:
     def number(v: str):
         v = str(v or "").strip()
@@ -259,10 +322,12 @@ def safe_salary(row: dict) -> dict | None:
             "period": {"monthly": "month", "yearly": "year", "hourly": "hour"}.get(period, period)}
 
 
-def extract_jobs(rows: list[list[str]]) -> tuple[list[dict], dict]:
+def extract_jobs(rows: list[list[str]], *,
+                 now: datetime | None = None) -> tuple[list[dict], dict]:
     if not rows:
         raise RuntimeError("Google Sheet is empty; refusing to overwrite current jobs")
     header_at, fields = find_headers(rows)
+    reference = capture_reference_at(now=now)
     by_id = {}
     counts = {"sheet_rows": 0, "valid_link_rows": 0, "qa_title_rows": 0}
     for line in rows[header_at + 1:]:
@@ -285,6 +350,10 @@ def extract_jobs(rows: list[list[str]]) -> tuple[list[dict], dict]:
             continue
         counts["qa_title_rows"] += 1
         source_id = hashlib.sha256(url.encode("utf-8")).hexdigest()[:24]
+        raw_posted = record.get("posted_at", "")
+        explicit_date = format_date(raw_posted)
+        relative_date_time = None if explicit_date else relative_posted_at(
+            raw_posted, reference=reference)
         by_id[source_id] = {
             "source": source_from_link(url), "source_id": source_id,
             "ingested_from": "google_sheet", "title": title[:280],
@@ -293,12 +362,12 @@ def extract_jobs(rows: list[list[str]]) -> tuple[list[dict], dict]:
             "url": url,
             "description": (record.get("description", "") + " " +
                             record.get("skills", ""))[:18000],
-            "posted_at": format_date(record.get("posted_at", "")),
-            # Relative labels refer to the Sheet's capture date, not today.
-            # Preserve them verbatim instead of inventing timestamps.
-            "posted_text": safe_salary_text(record.get("posted_at", "")),
+            "posted_at": explicit_date or relative_date_time,
+            "posted_text": safe_salary_text(raw_posted),
             "experience_text": safe_salary_text(record.get("experience_text", "")),
-            "posted_at_kind": "datePosted" if format_date(record.get("posted_at", "")) else None,
+            "posted_at_kind": ("datePosted" if explicit_date else
+                               "estimated_from_sheet_0600" if relative_date_time else None),
+            "posted_reference_at": reference.isoformat() if relative_date_time else None,
             "application_deadline": format_date(record.get("deadline", "")),
             "salary": safe_salary(record),
             "salary_text": safe_salary_text(record.get("salary_text", "")),
@@ -309,6 +378,9 @@ def extract_jobs(rows: list[list[str]]) -> tuple[list[dict], dict]:
             "Check the Google Sheet headers and data; preserving previous snapshot."
         )
     counts["distinct_qa_jobs"] = len(by_id)
+    counts["experience_present"] = sum(bool(j["experience_text"]) for j in by_id.values())
+    counts["posted_text_present"] = sum(bool(j["posted_text"]) for j in by_id.values())
+    counts["posted_datetime_present"] = sum(bool(j["posted_at"]) for j in by_id.values())
     return list(by_id.values()), counts
 
 

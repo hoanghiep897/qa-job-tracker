@@ -2,12 +2,14 @@ import json
 import os
 import tempfile
 import unittest
+from datetime import datetime, timezone
 from pathlib import Path
 from unittest.mock import patch
 
 from tracker.google_sheet_sync import (
     SOURCE, extract_jobs, find_headers, format_date, norm, safe_job_url,
     safe_salary, safe_salary_text, source_from_link, sync, validate_config, fetch_public_rows,
+    capture_reference_at, relative_posted_at,
 )
 
 SPREADSHEET_ID = "1vl0slYeHVb_yshR2AhczcVppCtBXRCJCty8rXYvkMGA"
@@ -81,20 +83,45 @@ class GoogleSheetSyncTests(unittest.TestCase):
         self.assertEqual(fields["skills"], 6)
         self.assertEqual(fields["experience_text"], 5)
         self.assertEqual(fields["posted_at"], 7)
-        jobs, stats = extract_jobs(real)
+        fixed_now = datetime.fromisoformat("2026-11-19T19:00:00+07:00")
+        jobs, stats = extract_jobs(real, now=fixed_now)
         self.assertEqual(stats["distinct_qa_jobs"], 3)
         self.assertEqual({j["source"] for j in jobs}, {"TopCV", "ITviec", "Upwork"})
         self.assertEqual([j["salary_text"] for j in jobs],
                          ["18 - 24 triệu", "Thoả thuận", "15–20 USD/giờ"])
         self.assertIn("Playwright", jobs[0]["description"])
-        self.assertIsNone(jobs[0]["posted_at"])  # relative dates must not be invented
+        self.assertEqual(jobs[0]["posted_at"], "2026-11-17T06:00:00+07:00")
+        self.assertEqual(jobs[0]["posted_at_kind"], "estimated_from_sheet_0600")
+        self.assertEqual(jobs[0]["posted_reference_at"], "2026-11-19T06:00:00+07:00")
         self.assertEqual(jobs[0]["posted_text"], "2 ngày trước")
         self.assertEqual(jobs[0]["experience_text"], "2 năm")
         self.assertEqual(jobs[1]["posted_text"], "Hôm nay")
         self.assertEqual(jobs[1]["experience_text"], "Senior")
         self.assertEqual(jobs[2]["posted_at"], "2026-11-19")
 
-    def test_posted_ago_strings_preserved_without_guessing_dates(self):
+    def test_relative_posted_conversion_from_0600_vietnam_time(self):
+        fixed_now = datetime.fromisoformat("2026-11-19T19:45:00+07:00")
+        reference = capture_reference_at(now=fixed_now)
+        self.assertEqual(reference.isoformat(), "2026-11-19T06:00:00+07:00")
+        cases = {
+            "Posted 2 hours ago": "2026-11-19T04:00:00+07:00",
+            "Posted 24 days ago": "2026-10-26T06:00:00+07:00",
+            "Posted 28 days ago": "2026-10-22T06:00:00+07:00",
+            "Posted 9 hours ago": "2026-11-18T21:00:00+07:00",
+            "Posted 1 day ago": "2026-11-18T06:00:00+07:00",
+            "Đăng 3 tuần trước": "2026-10-29T06:00:00+07:00",
+            "Đăng 12 ngày trước": "2026-11-07T06:00:00+07:00",
+            "Đăng hôm nay": "2026-11-19T06:00:00+07:00",
+            "Hôm qua": "2026-11-18T06:00:00+07:00",
+            "Posted 2 minutes ago": "2026-11-19T05:58:00+07:00",
+            "Posted 1 month ago": "2026-10-19T06:00:00+07:00",
+        }
+        for label, expected in cases.items():
+            with self.subTest(label=label):
+                self.assertEqual(relative_posted_at(label, reference=reference), expected)
+        self.assertIsNone(relative_posted_at("unknown", reference=reference))
+
+    def test_relative_date_and_experience_propagate_to_dataset(self):
         rows = [
             ["Vị trí", "Kinh nghiệm / Level", "Ngày đăng (tính từ 19/11/2026)", "Link"],
             ["QA Tester", "Không yêu cầu kinh nghiệm", "Posted 24 days ago",
@@ -102,13 +129,24 @@ class GoogleSheetSyncTests(unittest.TestCase):
             ["Automation Tester", "3-5 năm", "Posted 2 hours ago",
              "https://itviec.com/it-jobs/automation-2"],
         ]
-        jobs, counts = extract_jobs(rows)
+        jobs, counts = extract_jobs(rows, now=datetime.fromisoformat("2026-11-19T07:00:00+07:00"))
         self.assertEqual(counts["distinct_qa_jobs"], 2)
+        self.assertEqual(counts["experience_present"], 2)
+        self.assertEqual(counts["posted_datetime_present"], 2)
         self.assertEqual([j["posted_text"] for j in jobs],
                          ["Posted 24 days ago", "Posted 2 hours ago"])
+        self.assertEqual([j["posted_at"] for j in jobs],
+                         ["2026-10-26T06:00:00+07:00", "2026-11-19T04:00:00+07:00"])
         self.assertEqual([j["experience_text"] for j in jobs],
                          ["Không yêu cầu kinh nghiệm", "3-5 năm"])
-        self.assertTrue(all(j["posted_at"] is None for j in jobs))
+        self.assertTrue(all(j["posted_at_kind"] == "estimated_from_sheet_0600" for j in jobs))
+
+    def test_reference_uses_vietnam_calendar_day_even_when_utc_date_differs(self):
+        now_utc = datetime.fromisoformat("2026-11-18T23:30:00+00:00")
+        self.assertEqual(capture_reference_at(now=now_utc).isoformat(),
+                         "2026-11-19T06:00:00+07:00")
+        with self.assertRaises(ValueError):
+            capture_reference_at(now=datetime(2026, 11, 19, 7, 0))
 
     def test_migrate_existing_generic_sheet_source_without_duplication(self):
         import hashlib
