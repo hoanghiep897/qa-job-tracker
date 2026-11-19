@@ -150,3 +150,7 @@ Only run within the scope of your platform authorization. Both `permission_confi
 If the browser scan fails, the workflow fails and **does not overwrite** the published `data/jobs.json`. On success the dashboard reads the new JSON automatically. The first push of this workflow triggers a real smoke run; subsequent runs follow the daily schedule or a manual run. See the GitHub Actions log for the actual results (do not assume successful collection before verifying).
 
 Run local tests without installing Playwright: `python -m unittest discover -s tests -v`. To run the real browser task locally, install Playwright + Chromium and run `python -m tracker.browser_daily --platform itviec`.
+
+## v0.8 — Alternate daily browser pilots
+
+The scheduled Chromium workflow now tries **TopCV** and **VietnamWorks**, separately, at most five job details per source. ITviec browser crawling is disabled following the observed HTTP 403 from the GitHub runner. Each source retains its independently configured permission confirmation and `robots_override_authorized: false` by default. A failed source cannot overwrite the prior JSON; the workflow summary reports each outcome. If both fail, the scan is marked failed. This is a pilot: successful retrieval of live JD is not guaranteed and must be validated from logs.
