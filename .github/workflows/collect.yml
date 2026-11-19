@@ -5,6 +5,7 @@ on:
     paths:
       - "config/boards.json"
       - "tracker/export.py"
+      - "tracker/core.py"
       - ".github/workflows/collect.yml"
   workflow_dispatch:
   schedule:
