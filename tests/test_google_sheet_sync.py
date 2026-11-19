@@ -79,6 +79,8 @@ class GoogleSheetSyncTests(unittest.TestCase):
         _, fields = find_headers(real)
         self.assertEqual(fields["salary_text"], 3)
         self.assertEqual(fields["skills"], 6)
+        self.assertEqual(fields["experience_text"], 5)
+        self.assertEqual(fields["posted_at"], 7)
         jobs, stats = extract_jobs(real)
         self.assertEqual(stats["distinct_qa_jobs"], 3)
         self.assertEqual({j["source"] for j in jobs}, {"TopCV", "ITviec", "Upwork"})
@@ -86,6 +88,27 @@ class GoogleSheetSyncTests(unittest.TestCase):
                          ["18 - 24 triệu", "Thoả thuận", "15–20 USD/giờ"])
         self.assertIn("Playwright", jobs[0]["description"])
         self.assertIsNone(jobs[0]["posted_at"])  # relative dates must not be invented
+        self.assertEqual(jobs[0]["posted_text"], "2 ngày trước")
+        self.assertEqual(jobs[0]["experience_text"], "2 năm")
+        self.assertEqual(jobs[1]["posted_text"], "Hôm nay")
+        self.assertEqual(jobs[1]["experience_text"], "Senior")
+        self.assertEqual(jobs[2]["posted_at"], "2026-11-19")
+
+    def test_posted_ago_strings_preserved_without_guessing_dates(self):
+        rows = [
+            ["Vị trí", "Kinh nghiệm / Level", "Ngày đăng (tính từ 19/11/2026)", "Link"],
+            ["QA Tester", "Không yêu cầu kinh nghiệm", "Posted 24 days ago",
+             "https://www.topcv.vn/viec-lam/qa/1"],
+            ["Automation Tester", "3-5 năm", "Posted 2 hours ago",
+             "https://itviec.com/it-jobs/automation-2"],
+        ]
+        jobs, counts = extract_jobs(rows)
+        self.assertEqual(counts["distinct_qa_jobs"], 2)
+        self.assertEqual([j["posted_text"] for j in jobs],
+                         ["Posted 24 days ago", "Posted 2 hours ago"])
+        self.assertEqual([j["experience_text"] for j in jobs],
+                         ["Không yêu cầu kinh nghiệm", "3-5 năm"])
+        self.assertTrue(all(j["posted_at"] is None for j in jobs))
 
     def test_migrate_existing_generic_sheet_source_without_duplication(self):
         import hashlib
