@@ -1,0 +1,4 @@
+[
+  {"provider": "greenhouse", "board": "gitlab", "company": "GitLab", "enabled": true},
+  {"provider": "ashby", "board": "linear", "company": "Linear", "enabled": true}
+]
