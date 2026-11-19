@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-19T09:16:38+00:00",
+  "updated_at": "2026-11-19T09:17:30+00:00",
   "scope": "Selected public job boards; not representative of the whole market",
   "sources_succeeded": [
     "greenhouse:navervietnam",
@@ -10,10 +10,11 @@
     "ashby:colonist",
     "greenhouse:aperiasolutions",
     "lever:shopback-2",
-    "ashby:agility.io"
+    "ashby:agility.io",
+    "lever:binance"
   ],
   "sources_failed": [],
-  "source_records_read": 184,
+  "source_records_read": 188,
   "jobs": [
     {
       "source": "lever:shopback-2",
@@ -37,7 +38,7 @@
         "AI / LLM"
       ],
       "first_seen": "2026-11-19T09:16:38+00:00",
-      "last_seen": "2026-11-19T09:16:38+00:00",
+      "last_seen": "2026-11-19T09:17:30+00:00",
       "status": "observed",
       "posted_at": null,
       "posted_at_kind": null,
@@ -59,7 +60,33 @@
         "JavaScript"
       ],
       "first_seen": "2026-11-19T09:16:38+00:00",
-      "last_seen": "2026-11-19T09:16:38+00:00",
+      "last_seen": "2026-11-19T09:17:30+00:00",
+      "status": "observed",
+      "posted_at": null,
+      "posted_at_kind": null,
+      "application_deadline": null,
+      "salary": null
+    },
+    {
+      "source": "lever:binance",
+      "source_id": "da981b97-477a-4cd6-af88-797c6a7c0ea3",
+      "company": "Binance",
+      "title": "Web/App Test Engineer",
+      "location": "Hong Kong",
+      "market_region": "Other / unspecified",
+      "url": "https://jobs.lever.co/binance/da981b97-477a-4cd6-af88-797c6a7c0ea3",
+      "role": "Manual QA",
+      "skills": [
+        "Playwright",
+        "Selenium",
+        "Appium",
+        "Java",
+        "Python",
+        "JavaScript",
+        "SQL"
+      ],
+      "first_seen": "2026-11-19T09:17:30+00:00",
+      "last_seen": "2026-11-19T09:17:30+00:00",
       "status": "observed",
       "posted_at": null,
       "posted_at_kind": null,
@@ -87,7 +114,7 @@
         "AI / LLM"
       ],
       "first_seen": "2026-11-19T08:48:38+00:00",
-      "last_seen": "2026-11-19T09:16:38+00:00",
+      "last_seen": "2026-11-19T09:17:30+00:00",
       "status": "observed",
       "posted_at": null,
       "posted_at_kind": null,
@@ -112,7 +139,7 @@
         "k6"
       ],
       "first_seen": "2026-11-19T08:48:38+00:00",
-      "last_seen": "2026-11-19T09:16:38+00:00",
+      "last_seen": "2026-11-19T09:17:30+00:00",
       "status": "observed",
       "posted_at": null,
       "posted_at_kind": null,
@@ -137,7 +164,7 @@
         "JMeter"
       ],
       "first_seen": "2026-11-19T08:48:38+00:00",
-      "last_seen": "2026-11-19T09:16:38+00:00",
+      "last_seen": "2026-11-19T09:17:30+00:00",
       "status": "observed",
       "posted_at": null,
       "posted_at_kind": null,
@@ -164,7 +191,7 @@
         "GitHub Actions"
       ],
       "first_seen": "2026-11-19T08:47:41+00:00",
-      "last_seen": "2026-11-19T09:16:38+00:00",
+      "last_seen": "2026-11-19T09:17:30+00:00",
       "status": "observed",
       "posted_at": "2026-10-13T01:22:45-04:00",
       "posted_at_kind": "first_published",
@@ -186,7 +213,7 @@
         "Cypress"
       ],
       "first_seen": "2026-11-19T08:47:41+00:00",
-      "last_seen": "2026-11-19T09:16:38+00:00",
+      "last_seen": "2026-11-19T09:17:30+00:00",
       "status": "observed",
       "posted_at": "2026-04-16T18:02:11.394+00:00",
       "posted_at_kind": "last_published",
