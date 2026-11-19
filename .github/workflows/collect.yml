@@ -1,5 +1,11 @@
 name: Collect public QA jobs
 on:
+  push:
+    branches: [main]
+    paths:
+      - "config/boards.json"
+      - "tracker/export.py"
+      - ".github/workflows/collect.yml"
   workflow_dispatch:
   schedule:
     - cron: "15 3 * * *"
