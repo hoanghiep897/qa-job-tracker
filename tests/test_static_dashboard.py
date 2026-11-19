@@ -47,7 +47,7 @@ class StaticDashboardTests(unittest.TestCase):
         self.assertIn('ingested_from:String(j.ingested_from||"")', html)
         self.assertIn('posted_text:String(j.posted_text||"")', html)
         self.assertIn('experience_text:String(j.experience_text||"")', html)
-        self.assertIn('"experience_text","skills","posted_at","posted_text"', html)
+        self.assertIn('"experience_text","salary_text","posted_at","posted_text","skills_text"', html)
 
     def test_relative_dates_render_estimated_ict_timestamps(self):
         html = (ROOT / "index.html").read_text(encoding="utf-8")
@@ -95,7 +95,7 @@ class StaticDashboardTests(unittest.TestCase):
         parser = ScriptParser()
         parser.feed(html)
         script = "\n".join(parser.script)
-        marker = '\npopulate();render();\nasync function loadPublishedJobs()'
+        marker = '\npopulate();render();$("#dataStatus").textContent="Đang tải dữ liệu Google Sheet…";\nasync function loadPublishedJobs()'
         self.assertIn(marker, script)
         script = script.split(marker, 1)[0]
         harness = r"""
@@ -156,6 +156,17 @@ vm.runInContext(demoActions,ctx);
 """
         result = subprocess.run(["node", "-e", harness, script], capture_output=True, text=True)
         self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_public_dashboard_has_only_google_sheet_input(self):
+        html = (ROOT / "index.html").read_text(encoding="utf-8")
+        self.assertNotIn('id="csv"', html)
+        self.assertNotIn('DEMO DATA:', html)
+        self.assertNotIn('const demo=', html)
+        self.assertNotIn('id="reset"', html)
+        self.assertIn('payload.source_mode!=="google_sheet_only"', html)
+        self.assertIn('j.skills_text||j.skills.join(", ")', html)
+        self.assertIn('Lịch sử SQLite', html)
+        self.assertIn('id="export"', html)
 
     def test_html_and_javascript_syntax(self):
         html = (ROOT / "index.html").read_text(encoding="utf-8")

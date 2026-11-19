@@ -33,6 +33,7 @@ VIETNAM_TZ = ZoneInfo("Asia/Ho_Chi_Minh")
 SHEET_CAPTURE_HOUR = 6  # owner manually updates at 06:00 local time
 SHEET_ID_RE = re.compile(r"^[A-Za-z0-9_-]{20,120}$")
 HEADERS = {
+    "source": ("nguon", "source", "job board", "nen tang", "trang tuyen dung"),
     "title": ("title", "job title", "ten vi tri", "vi tri", "vi tri tuyen dung",
               "vi tri cong viec", "chuc danh", "ten cong viec", "cong viec",
               "job", "ten job", "vi tri ung tuyen"),
