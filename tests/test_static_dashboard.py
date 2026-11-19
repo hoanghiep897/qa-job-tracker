@@ -43,7 +43,8 @@ class StaticDashboardTests(unittest.TestCase):
         html = (ROOT / "index.html").read_text(encoding="utf-8")
         self.assertIn("<th>Kinh nghiệm / Level</th>", html)
         self.assertIn("if(!job.posted_at)return job.posted_text", html)
-        self.assertIn('j.experience_text||"Không công bố"', html)
+        self.assertIn('j.experience_text||(j.ingested_from==="google_sheet"?"Chưa có trong Sheet":"Không công bố")', html)
+        self.assertIn('ingested_from:String(j.ingested_from||"")', html)
         self.assertIn('posted_text:String(j.posted_text||"")', html)
         self.assertIn('experience_text:String(j.experience_text||"")', html)
         self.assertIn('"experience_text","skills","posted_at","posted_text"', html)
@@ -54,7 +55,7 @@ class StaticDashboardTests(unittest.TestCase):
         self.assertIn('timeZone:"Asia/Ho_Chi_Minh"', html)
         self.assertIn('return fmt.format(dt)+" (ước tính)"', html)
         self.assertIn('posted_reference_at:String(j.posted_reference_at||"")', html)
-        self.assertIn('j.experience_text||"Không công bố"', html)
+        self.assertIn('j.experience_text||(j.ingested_from==="google_sheet"?"Chưa có trong Sheet":"Không công bố")', html)
 
     def test_html_and_javascript_syntax(self):
         html = (ROOT / "index.html").read_text(encoding="utf-8")
