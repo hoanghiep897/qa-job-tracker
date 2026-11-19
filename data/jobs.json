@@ -1,21 +1,80 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-19T08:47:41+00:00",
+  "updated_at": "2026-11-19T08:48:38+00:00",
   "scope": "Selected public job boards; not representative of the whole market",
   "sources_succeeded": [
     "greenhouse:navervietnam",
     "ashby:what3words",
     "greenhouse:workatbackbase",
+    "lever:BTSE",
     "ashby:colonist"
   ],
-  "sources_failed": [
+  "sources_failed": [],
+  "source_records_read": 104,
+  "jobs": [
     {
       "source": "lever:BTSE",
-      "error": "'str' object has no attribute 'get'"
-    }
-  ],
-  "source_records_read": 65,
-  "jobs": [
+      "source_id": "4095cd9c-16e0-48a5-9123-d0a6a4222edc",
+      "company": "BTSE",
+      "title": "Principal QA Engineer/ QA Manager",
+      "location": "Hong Kong",
+      "url": "https://jobs.lever.co/BTSE/4095cd9c-16e0-48a5-9123-d0a6a4222edc",
+      "role": "QA Lead",
+      "skills": [
+        "Java",
+        "Python",
+        "JavaScript",
+        "TypeScript",
+        "Jenkins",
+        "GitHub Actions",
+        "JMeter",
+        "k6",
+        "AI / LLM"
+      ],
+      "first_seen": "2026-11-19T08:48:38+00:00",
+      "last_seen": "2026-11-19T08:48:38+00:00",
+      "status": "observed"
+    },
+    {
+      "source": "lever:BTSE",
+      "source_id": "ed2da226-a787-493e-ace0-9890ca3d2f8a",
+      "company": "BTSE",
+      "title": "Senior QA Automation Engineer",
+      "location": "Southeast Asia",
+      "url": "https://jobs.lever.co/BTSE/ed2da226-a787-493e-ace0-9890ca3d2f8a",
+      "role": "Automation QA",
+      "skills": [
+        "Selenium",
+        "Robot Framework",
+        "Postman",
+        "Python",
+        "JMeter",
+        "k6"
+      ],
+      "first_seen": "2026-11-19T08:48:38+00:00",
+      "last_seen": "2026-11-19T08:48:38+00:00",
+      "status": "observed"
+    },
+    {
+      "source": "lever:BTSE",
+      "source_id": "1902068b-6097-43aa-966c-7af035cc6998",
+      "company": "BTSE",
+      "title": "Senior QA Engineer",
+      "location": "Southeast Asia",
+      "url": "https://jobs.lever.co/BTSE/1902068b-6097-43aa-966c-7af035cc6998",
+      "role": "Manual QA",
+      "skills": [
+        "Appium",
+        "Postman",
+        "API Testing",
+        "Python",
+        "JavaScript",
+        "JMeter"
+      ],
+      "first_seen": "2026-11-19T08:48:38+00:00",
+      "last_seen": "2026-11-19T08:48:38+00:00",
+      "status": "observed"
+    },
     {
       "source": "greenhouse:workatbackbase",
       "source_id": "8068927",
@@ -35,7 +94,7 @@
         "GitHub Actions"
       ],
       "first_seen": "2026-11-19T08:47:41+00:00",
-      "last_seen": "2026-11-19T08:47:41+00:00",
+      "last_seen": "2026-11-19T08:48:38+00:00",
       "status": "observed"
     },
     {
@@ -52,7 +111,7 @@
         "Cypress"
       ],
       "first_seen": "2026-11-19T08:47:41+00:00",
-      "last_seen": "2026-11-19T08:47:41+00:00",
+      "last_seen": "2026-11-19T08:48:38+00:00",
       "status": "observed"
     }
   ]
