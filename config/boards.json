@@ -63,9 +63,10 @@
       "https://itviec.com/it-jobs?query=tester"
     ],
     "max_search_pages": 1,
-    "max_job_details": 10,
+    "max_job_details": 5,
     "delay_seconds": 2,
-    "robots_override_authorized": false
+    "robots_override_authorized": false,
+    "browser_enabled": true
   },
   {
     "provider": "topcv",
