@@ -245,11 +245,12 @@ def collect_licensed(board: dict, *, fetch=fetch_html, sleep=time.sleep,
     max_pages = min(max(int(board.get("max_search_pages", 1)), 1), 3)
     max_detail = min(max(int(board.get("max_job_details", 12)), 1), 30)
     delay = min(max(float(board.get("delay_seconds", 1.5)), 1.0), 30.0)
+    override_robots = board.get("robots_override_authorized") is True
     candidate_urls = []
     for seed in seeds[:max_pages]:
         url = canonical_url(seed, platform)
-        if not check_robots(url, platform):
-            raise RuntimeError(f"Robots policy disallows search URL: {url}")
+        if not override_robots and not check_robots(url, platform):
+            raise RuntimeError(f"Robots policy disallows search URL: {url}; explicit authorization for robots override required")
         html = fetch(url, platform=platform)
         candidate_urls.extend(discover_links(html, url, platform))
         sleep(delay)
@@ -261,7 +262,7 @@ def collect_licensed(board: dict, *, fetch=fetch_html, sleep=time.sleep,
         if url in seen:
             continue
         seen.add(url)
-        if not check_robots(url, platform):
+        if not override_robots and not check_robots(url, platform):
             continue
         attempted += 1
         try:

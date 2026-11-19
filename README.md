@@ -130,3 +130,11 @@ Configured examples:
 A live result count can only be claimed after reviewing GitHub Actions logs and the updated \`data/jobs.json\`. Sites may return zero or reject crawling even when permission is granted. In that case obtain official API/feed documentation or a site-specific allowed endpoint rather than evading restrictions.
 
 Run tests: \`python -m unittest discover -s tests -v\`.
+
+### Robots policy and written authorization
+
+The first GitHub Actions run found that all three licensed HTML search URLs were disallowed by their robots policies. They therefore **did not contribute any new job records**; the existing ATS records remain intact.
+
+An optional \`robots_override_authorized: true\` flag allows a source owner to honor **specific written permission that explicitly overrides robots.txt restrictions**. It defaults to **false** for ITviec, TopCV and VietnamWorks. The \`permission_confirmed\` flag does not imply such an override. Enable the additional flag only when your agreement actually covers it; no captcha solving, HTTP 403/429 workaround, or traffic obfuscation is performed.
+
+If an official authenticated or licensed API/feed was supplied, prefer that endpoint rather than public HTML crawling. Even with a robots override, pages with blocking or JS-only content may yield no data; inspect Actions logs and request an authorized feed from the provider.

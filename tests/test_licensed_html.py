@@ -60,6 +60,21 @@ class LicensedHTMLTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             collect_licensed(config,fetch=lambda *a,**k:HTML_LIST)
 
+    def test_robots_override_must_be_explicit(self):
+        config={"provider":"topcv","board":"licensed-search","enabled":True,
+                "permission_confirmed":True,"search_urls":[BASE],
+                "max_job_details":1,"delay_seconds":1}
+        fake=lambda url, *, platform: HTML_LIST if "tim-viec-lam" in url else HTML_JOB
+        with self.assertRaisesRegex(RuntimeError,"robots"):
+            collect_licensed(config,fetch=fake,
+                             check_robots=lambda url, platform:False,
+                             sleep=lambda n:None)
+        config["robots_override_authorized"]=True
+        jobs=collect_licensed(config,fetch=fake,
+                             check_robots=lambda url, platform:False,
+                             sleep=lambda n:None)
+        self.assertEqual(len(jobs),1)
+
     def test_crawl_is_bounded(self):
         urls=[]
         def fake_fetch(url, *, platform):
