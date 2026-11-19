@@ -52,7 +52,7 @@ $("#export").onclick=()=>{const r=$("#role").value,l=$("#location").value;const 
 populate();render();
 async function loadPublishedJobs(){
   try{
-    const response=await fetch("./data/jobs.json",{cache:"no-store"});
+    const response=await fetch("https://raw.githubusercontent.com/hoanghiep897/qa-job-tracker/main/data/jobs.json",{cache:"no-store"});
     if(!response.ok) return;
     const payload=await response.json();
     if(!Array.isArray(payload.jobs)||!payload.jobs.length) return;
