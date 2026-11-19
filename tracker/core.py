@@ -32,8 +32,8 @@ SKILLS = {
 ROLE_RE = [
     ("SDET", r"\bsdet\b|software development engineer in test"),
     ("QA Lead", r"\b(?:qa|test|quality)\s*(?:lead|manager)\b|\bhead of qa\b"),
-    ("Automation QA", r"\b(?:automation|automated|test automation)\b"),
-    ("Manual QA", r"\b(?:qa|tester|testing|quality assurance|test engineer)\b"),
+    ("Automation QA", r"\b(?:automation|automated|test automation)\b|kiểm thử tự động"),
+    ("Manual QA", r"\b(?:qa|qc|tester|testing|quality assurance|test engineer)\b|kiểm thử|kiểm tra phần mềm"),
 ]
 
 def tags(text: str) -> list[str]:
@@ -136,6 +136,9 @@ def _ashby_salary(value: object) -> dict | None:
 def fetch_board(board: dict) -> list[dict]:
     """Fetch publicly listed jobs; board names are explicitly configured by the operator."""
     provider = board["provider"].lower()
+    if provider in ("itviec", "topcv", "vietnamworks"):
+        from tracker.licensed_html import collect_licensed
+        return collect_licensed(board)
     slug = board["board"]
     if not isinstance(slug, str) or not re.fullmatch(r"[A-Za-z0-9_-]+(?:\.[A-Za-z0-9_-]+)*" if provider == "ashby" else r"[A-Za-z0-9_-]+", slug):
         raise ValueError("Invalid board identifier")
