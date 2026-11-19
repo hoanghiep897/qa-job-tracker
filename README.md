@@ -113,3 +113,20 @@ New configured public ATS boards: **Aperia Solutions (Greenhouse)**, **ShopBack 
 **ITviec, TopCV, VietnamWorks, TopDev and LinkedIn are NOT scraped by this application.** Search pages being public does not by itself authorize systematic copying and republishing. ITviec's terms may require prior written permission for automated collection. Integration with these services requires a license, approved API/feed, or another authorized method. No CAPTCHA evasion, logged-in scraping or rotating proxy systems are included.
 
 Use `config/boards.json` to disable any source if its permissions change. At most one request is made to each public ATS endpoint per collection. Publication on the dashboard is still limited to title, company, location, URL, source, observed timestamps and extracted skills; original full JD text is not republished. The sample remains **non-representative** of Vietnam's QA labor market.
+
+## Licensed Vietnamese job-board crawler (v0.6)
+
+The repository contains a bounded HTML crawler in \`tracker/licensed_html.py\` for ITviec, TopCV and VietnamWorks. The operator confirmed they have permission; each integration additionally requires \`enabled: true\` and \`permission_confirmed: true\` in \`config/boards.json\`. Confirm your agreement covers the **specific domains, automated requests, and metadata publication** before running. Disable any source outside scope.
+
+The configured search pages are starter URLs, **not provider-supported APIs**. HTML parsing uses links and structured \`JobPosting\` JSON-LD when available. It does not automate sign-in, access restricted data, solve CAPTCHA, bypass anti-bot protection, or retry blocked requests with other identities. Search page layouts may be JavaScript-rendered, and provider URLs may change. A source with zero parsable links or blocked access is reported as a failed source and does not cause existing good data to be erased.
+
+Collection behavior: one bounded sequential request per listing/detail page; strict domain validation; \`robots.txt\` check; minimum delay of one second; max three search pages and 30 job details per source, with lower configured defaults; HTTPS only; no full JD text republished. Extracted salary and deadline are included only when source structured data explicitly reports them.
+
+Configured examples:
+- ITviec: \`https://itviec.com/it-jobs?query=tester\`
+- TopCV: \`https://www.topcv.vn/tim-viec-lam-tester\`
+- VietnamWorks: \`https://www.vietnamworks.com/viec-lam?q=tester\`
+
+A live result count can only be claimed after reviewing GitHub Actions logs and the updated \`data/jobs.json\`. Sites may return zero or reject crawling even when permission is granted. In that case obtain official API/feed documentation or a site-specific allowed endpoint rather than evading restrictions.
+
+Run tests: \`python -m unittest discover -s tests -v\`.
