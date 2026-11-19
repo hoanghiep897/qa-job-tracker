@@ -154,3 +154,7 @@ Run local tests without installing Playwright: `python -m unittest discover -s t
 ## v0.8 — Alternate daily browser pilots
 
 The scheduled Chromium workflow now tries **TopCV** and **VietnamWorks**, separately, at most five job details per source. ITviec browser crawling is disabled following the observed HTTP 403 from the GitHub runner. Each source retains its independently configured permission confirmation and `robots_override_authorized: false` by default. A failed source cannot overwrite the prior JSON; the workflow summary reports each outcome. If both fail, the scan is marked failed. This is a pilot: successful retrieval of live JD is not guaranteed and must be validated from logs.
+
+## Live browser pilot result (19 November 2026)
+
+The GitHub-hosted Chromium run [44508413945](https://github.com/hoanghiep897/qa-job-tracker/actions/runs/44508413945) found TopCV HTTP 403; VietnamWorks robots.txt returned HTTP 404, leaving its access policy unverified. No new JD were collected from these sites. ITviec previously returned HTTP 403. The browser workflow has been **paused as a daily scheduled job** after these failures to avoid repeated unsuccessful requests; it remains manually runnable (workflow_dispatch) and on code/configuration changes for diagnostics. The separate working ATS daily collector still runs normally. Re-enable scheduling after approved access or a verified API/feed is available.
