@@ -67,7 +67,7 @@ class StaticDashboardTests(unittest.TestCase):
         # Percent widths for all eleven columns must sum to 100%.
         import re
         widths = {int(n): int(p) for n, p in
-                  re.findall(r"\\.jd-explorer th:nth-child\\((\\d+)\\)\\{width:(\\d+)%\\}", html)}
+                  re.findall(r"\.jd-explorer th:nth-child\((\d+)\)\{width:(\d+)%\}", html)}
         self.assertEqual(set(widths), set(range(1, 12)))
         self.assertEqual(sum(widths.values()), 100)
         self.assertIn("<th>Link JD</th>", html)
