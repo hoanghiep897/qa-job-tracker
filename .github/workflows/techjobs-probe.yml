@@ -1,0 +1,20 @@
+name: TechJobs feed QA coverage probe (read only)
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/techjobs-probe.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Probe TechJobs public feed (no publish, no secrets)
+        run: python -m tracker.techjobs_probe --max-pages 2 --per-page 200
