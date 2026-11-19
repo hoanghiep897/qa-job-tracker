@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-19T09:02:57+00:00",
+  "updated_at": "2026-11-19T09:10:36+00:00",
   "scope": "Selected public job boards; not representative of the whole market",
   "sources_succeeded": [
     "greenhouse:navervietnam",
@@ -33,8 +33,12 @@
         "AI / LLM"
       ],
       "first_seen": "2026-11-19T08:48:38+00:00",
-      "last_seen": "2026-11-19T09:02:57+00:00",
-      "status": "observed"
+      "last_seen": "2026-11-19T09:10:36+00:00",
+      "status": "observed",
+      "posted_at": null,
+      "posted_at_kind": null,
+      "application_deadline": null,
+      "salary": null
     },
     {
       "source": "lever:BTSE",
@@ -54,8 +58,12 @@
         "k6"
       ],
       "first_seen": "2026-11-19T08:48:38+00:00",
-      "last_seen": "2026-11-19T09:02:57+00:00",
-      "status": "observed"
+      "last_seen": "2026-11-19T09:10:36+00:00",
+      "status": "observed",
+      "posted_at": null,
+      "posted_at_kind": null,
+      "application_deadline": null,
+      "salary": null
     },
     {
       "source": "lever:BTSE",
@@ -75,8 +83,12 @@
         "JMeter"
       ],
       "first_seen": "2026-11-19T08:48:38+00:00",
-      "last_seen": "2026-11-19T09:02:57+00:00",
-      "status": "observed"
+      "last_seen": "2026-11-19T09:10:36+00:00",
+      "status": "observed",
+      "posted_at": null,
+      "posted_at_kind": null,
+      "application_deadline": null,
+      "salary": null
     },
     {
       "source": "greenhouse:workatbackbase",
@@ -98,8 +110,12 @@
         "GitHub Actions"
       ],
       "first_seen": "2026-11-19T08:47:41+00:00",
-      "last_seen": "2026-11-19T09:02:57+00:00",
-      "status": "observed"
+      "last_seen": "2026-11-19T09:10:36+00:00",
+      "status": "observed",
+      "posted_at": "2026-10-13T01:22:45-04:00",
+      "posted_at_kind": "first_published",
+      "application_deadline": null,
+      "salary": null
     },
     {
       "source": "ashby:colonist",
@@ -116,8 +132,12 @@
         "Cypress"
       ],
       "first_seen": "2026-11-19T08:47:41+00:00",
-      "last_seen": "2026-11-19T09:02:57+00:00",
-      "status": "observed"
+      "last_seen": "2026-11-19T09:10:36+00:00",
+      "status": "observed",
+      "posted_at": "2026-04-16T18:02:11.394+00:00",
+      "posted_at_kind": "last_published",
+      "application_deadline": null,
+      "salary": null
     }
   ]
 }
