@@ -55,3 +55,8 @@ jobs:
             git commit -m "data: refresh browser-observed QA jobs"
             git push
           fi
+      - name: Fail scan if neither source could be collected
+        if: ${{ steps.topcv.outcome != 'success' && steps.vietnamworks.outcome != 'success' }}
+        run: |
+          echo "Both browser sources failed. Existing JSON was preserved."
+          exit 1
