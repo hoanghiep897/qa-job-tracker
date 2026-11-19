@@ -57,6 +57,22 @@ class StaticDashboardTests(unittest.TestCase):
         self.assertIn('posted_reference_at:String(j.posted_reference_at||"")', html)
         self.assertIn('j.experience_text||(j.ingested_from==="google_sheet"?"Chưa có trong Sheet":"Không công bố")', html)
 
+
+    def test_jd_explorer_fits_wider_desktop_without_hidden_columns(self):
+        html = (ROOT / "index.html").read_text(encoding="utf-8")
+        self.assertIn("main{width:100%;max-width:1800px;", html)
+        self.assertIn('<section class="card section jd-explorer">', html)
+        self.assertIn(".jd-explorer table{width:100%;table-layout:fixed}", html)
+        self.assertIn("@media(max-width:1279px){.jd-explorer table{table-layout:auto;min-width:1150px}", html)
+        # Percent widths for all eleven columns must sum to 100%.
+        import re
+        widths = {int(n): int(p) for n, p in
+                  re.findall(r"\\.jd-explorer th:nth-child\\((\\d+)\\)\\{width:(\\d+)%\\}", html)}
+        self.assertEqual(set(widths), set(range(1, 12)))
+        self.assertEqual(sum(widths.values()), 100)
+        self.assertIn("<th>Link JD</th>", html)
+        self.assertIn("<th>Nguồn</th>", html)
+
     def test_html_and_javascript_syntax(self):
         html = (ROOT / "index.html").read_text(encoding="utf-8")
         parser = ScriptParser()
