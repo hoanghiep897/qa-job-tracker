@@ -1,3 +1,32 @@
+# Current architecture: Google Sheet only + SQLite (November 2026)
+
+**Authoritative data source:** The owner-maintained spreadsheet in `config/google_sheet.json` (currently spreadsheet ID `1z32LC5lyYNif8tZpT99si1HlsiWHNFbUsfL6WJkNBzg`). External ATS crawlers, Playwright probes, and TechJobs diagnostics are **not scheduled, enabled or called** in the live collection pipeline. Their legacy code/documentation may remain for historical reference only; they are not a dashboard data source.
+
+### How the daily pipeline works
+
+1. Before **06:00 Vietnam time**, update the **same configured spreadsheet/tab** with the day's JD records.
+2. Around **07:00 Vietnam time**, GitHub Actions runs `.github/workflows/google-sheet-sync.yml`, reads the Sheet (public CSV or Google Sheets read-only service-account API), and validates its headers and links.
+3. The standard-library **SQLite database** `data/jobs.sqlite3` stores an immutable observation row for every valid Sheet row in every import (including repeat jobs and updates), plus a current indexed jobs table. Removed jobs are retained in database history, but marked inactive.
+4. `data/jobs.json` is generated **only from the current SQLite jobs view**. The public Vercel site reads this JSON with no backend/database credentials. The initial migration discards old ATS records from the displayed snapshot while leaving earlier Git commits intact.
+5. On success GitHub Actions commits **both SQLite and the JSON snapshot**. On invalid, empty or inaccessible input, the job fails without publishing a new JSON or altering the committed DB. The existing Vercel deployment is static and reads fresh JSON from GitHub at page load.
+
+**Current display fields mirror the Sheet:** original title, company, source platform (based on the exact row's job link), salary/budget, location, experience/level, original skill requirements, original posting label (and estimated date from 06:00 ICT), link to original job and optional deadline. Unlike the previous ATS collector, the new importer does **not filter job titles** — all valid rows authored in the Sheet become eligible to appear. A repeated job link counts once in the current view; each row observation is still saved in SQLite history. Charts may compute derived roles and skills for filtering, while the JD table retains the owner's original field text.
+
+**Important limitations:** GitHub repositories are versioned storage, not a hosted SQL server. This is a genuine SQLite database file and works for this small daily dataset with no cloud DB account, but it grows with daily history and is committed to a **public GitHub repository**. Do not place confidential, private or personal data in job columns. For large-scale production data or server-side SQL queries, migrate to hosted PostgreSQL. The website **does not query SQLite directly** — it reads the JSON snapshot built from the database.
+
+**Daily "new Sheet":** Fully automatic operation assumes the owner **updates rows in the same Google spreadsheet/tab** each morning. Creating a completely new spreadsheet ID (or a new tab with a new gid) cannot be auto-discovered from the old link with CSV-only access. If replacing the file or tab daily, update `config/google_sheet.json` with the new ID/gid before 07:00, or keep reusing the fixed Sheet as an intake tab. Stale relative posting labels will otherwise be estimated against the wrong day's 06:00 reference.
+
+To run locally (Python 3.11+, no database service needed):
+```bash
+python -m tracker.sheet_database --config config/google_sheet.json --output data/jobs.json --database data/jobs.sqlite3
+```
+
+To inspect history locally: `sqlite3 data/jobs.sqlite3 'SELECT id, reference_at, unique_jobs FROM snapshots ORDER BY id DESC LIMIT 10;'`.
+
+---
+
+## Historical implementation notes (superseded for live pipeline)
+
 # QA Job Tracker
 
 A lightweight QA/Tester job market dashboard using Python, SQLite and Streamlit. No paid database, hosting or AI API is required to run locally.
