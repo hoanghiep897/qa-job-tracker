@@ -27,7 +27,8 @@ from tracker.google_sheet_sync import (
 
 def clean_sheet_cell(value: str, max_chars: int = 2000) -> str:
     """Retain cell text without shortening genuine skill requirements to 180 chars."""
-    return re.sub(r"[\\x00-\\x08\\x0b\\x0c\\x0e-\\x1f\\x7f]+", " ", str(value or "")).strip()[:max_chars]
+    clean = "".join(ch if (ch in "\\n\\r\\t" or (ord(ch) >= 32 and ord(ch) != 127)) else " " for ch in str(value or ""))
+    return clean.strip()[:max_chars]
 
 
 DB_SCHEMA = """
