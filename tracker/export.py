@@ -13,7 +13,7 @@ from pathlib import Path
 from tracker.core import fetch_board, role, tags
 
 QA_TITLE = re.compile(
-    r"\b(?:qa|quality assurance|quality engineer|quality analyst|test(?:ing|er|ers)?|sdet|automation engineer|software quality|verification engineer)\b",
+    r"\b(?:qa|qc|quality assurance|quality engineer|quality analyst|test(?:ing|er|ers)?|sdet|automation engineer|software quality|verification engineer|kiểm thử|kiểm tra phần mềm)\b",
     re.IGNORECASE,
 )
 MAX_JOBS = 2500
