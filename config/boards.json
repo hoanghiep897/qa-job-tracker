@@ -28,5 +28,23 @@
     "board": "colonist",
     "company": "Colonist",
     "enabled": true
+  },
+  {
+    "provider": "greenhouse",
+    "board": "aperiasolutions",
+    "company": "Aperia",
+    "enabled": true
+  },
+  {
+    "provider": "lever",
+    "board": "shopback-2",
+    "company": "ShopBack",
+    "enabled": true
+  },
+  {
+    "provider": "ashby",
+    "board": "agility.io",
+    "company": "Agility IO",
+    "enabled": true
   }
 ]

@@ -11,6 +11,18 @@ class CoreTests(unittest.TestCase):
     def test_role(self):
         self.assertEqual(role("Senior SDET"), "SDET")
         self.assertEqual(role("QA Automation Engineer"), "Automation QA")
+    def test_ashby_board_slug_with_dot(self):
+        with patch("tracker.core.request_json", return_value={"jobs": []}) as request:
+            jobs = fetch_board({"provider": "ashby", "board": "agility.io", "company": "Agility IO"})
+        self.assertEqual(jobs, [])
+        self.assertIn("/agility.io?", request.call_args.args[0])
+
+    def test_board_slug_rejects_host_and_path_injection(self):
+        for invalid in ("../evil", "a/b", "x?hack=1", "evil.com/path"):
+            with self.subTest(invalid=invalid):
+                with self.assertRaises(ValueError):
+                    fetch_board({"provider": "ashby", "board": invalid})
+
     def test_lever_string_content(self):
         payload = [{
             "id": "lever-1", "text": "Senior QA Engineer",

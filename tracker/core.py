@@ -137,7 +137,7 @@ def fetch_board(board: dict) -> list[dict]:
     """Fetch publicly listed jobs; board names are explicitly configured by the operator."""
     provider = board["provider"].lower()
     slug = board["board"]
-    if not re.fullmatch(r"[A-Za-z0-9_-]+", slug):
+    if not isinstance(slug, str) or not re.fullmatch(r"[A-Za-z0-9_-]+(?:\.[A-Za-z0-9_-]+)*" if provider == "ashby" else r"[A-Za-z0-9_-]+", slug):
         raise ValueError("Invalid board identifier")
     company = board.get("company") or slug
     safe = quote(slug, safe="")
