@@ -1,5 +1,9 @@
 name: Daily licensed browser QA job scan
 on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/browser-collect.yml"
   schedule:
     - cron: "0 0 * * *" # 07:00 Asia/Bangkok
   workflow_dispatch:
