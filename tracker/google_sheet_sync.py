@@ -22,7 +22,9 @@ from urllib.request import Request, urlopen
 
 from tracker.export import build_dataset, relevant
 
-SOURCE = "google_sheet:daily"
+SOURCE = "google_sheet:daily" # ingestion event, not the displayed job-board source
+SOURCE_NAMES = {"topcv.vn": "TopCV", "itviec.com": "ITviec", "upwork.com": "Upwork",
+                "vietnamworks.com": "VietnamWorks", "careerbuilder.vn": "CareerViet"}
 MAX_CSV_BYTES = 6_000_000
 MAX_ROWS = 5000
 SHEET_ID_RE = re.compile(r"^[A-Za-z0-9_-]{20,120}$")
@@ -40,12 +42,15 @@ HEADERS = {
     "description": ("description", "mo ta", "mo ta cong viec",
                     "job description", "jd", "noi dung jd", "mo ta jd"),
     "skills": ("skills", "skill", "ky nang", "ky nang yeu cau",
+               "skill yeu cau cho cv", "ky nang yeu cau cho cv",
                "yeu cau", "yeu cau cong viec", "cong nghe"),
     "posted_at": ("date posted", "posted at", "posted date", "ngay dang",
                   "ngay dang tin", "ngay dang tuyen", "ngay tuyen dung"),
     "deadline": ("deadline", "han ung tuyen", "han nop ho so",
                  "han nop", "ngay het han", "han chot"),
     "status": ("status", "trang thai", "tinh trang"),
+    "salary_text": ("luong budget", "luong / budget", "muc luong", "luong",
+                    "salary", "salary range", "thu nhap", "budget"),
     "salary_min": ("salary min", "min salary", "luong toi thieu", "luong min"),
     "salary_max": ("salary max", "max salary", "luong toi da", "luong max"),
     "salary_currency": ("salary currency", "currency", "don vi tien", "tien te"),
@@ -191,6 +196,23 @@ def safe_job_url(value: str) -> str | None:
                        urlencode(allowed_query), ""))
 
 
+def source_from_link(url: str) -> str:
+    """Use the actual JD URL host, never the spreadsheet's generic source name."""
+    host = (urlsplit(url).hostname or "").lower().removeprefix("www.")
+    if not host:
+        raise ValueError("JD source URL needs a host")
+    return SOURCE_NAMES.get(host, host)
+
+
+def safe_salary_text(raw: str) -> str | None:
+    """Keep owner's stated compensation verbatim; don't invent ranges or units."""
+    value = str(raw or "").strip()
+    if not value:
+        return None
+    # Limit text and remove dangerous control characters. The UI uses textContent.
+    return re.sub(r"[\x00-\x1f\x7f]+", " ", value)[:180].strip() or None
+
+
 def format_date(value: str) -> str | None:
     v = str(value or "").strip()
     if not v:
@@ -256,7 +278,8 @@ def extract_jobs(rows: list[list[str]]) -> tuple[list[dict], dict]:
         counts["qa_title_rows"] += 1
         source_id = hashlib.sha256(url.encode("utf-8")).hexdigest()[:24]
         by_id[source_id] = {
-            "source": SOURCE, "source_id": source_id, "title": title[:280],
+            "source": source_from_link(url), "source_id": source_id,
+            "ingested_from": "google_sheet", "title": title[:280],
             "company": (record.get("company") or "Không rõ công ty")[:160],
             "location": (record.get("location") or "")[:240],
             "url": url,
@@ -266,6 +289,7 @@ def extract_jobs(rows: list[list[str]]) -> tuple[list[dict], dict]:
             "posted_at_kind": "datePosted" if format_date(record.get("posted_at", "")) else None,
             "application_deadline": format_date(record.get("deadline", "")),
             "salary": safe_salary(record),
+            "salary_text": safe_salary_text(record.get("salary_text", "")),
         }
     if not by_id:
         raise RuntimeError(
@@ -284,9 +308,21 @@ def sync(config_path: str = "config/google_sheet.json",
     jobs, counts = extract_jobs(rows)
     output = Path(output_path)
     previous = json.loads(output.read_text(encoding="utf-8")) if output.exists() else None
+    # Re-key previous generic-source records by job URL to avoid duplicate JD
+    # after migration and keep original first_seen timestamps.
+    if previous:
+        for old in previous.get("jobs", []):
+            if old.get("source") == SOURCE and old.get("url"):
+                old["source"] = source_from_link(old["url"])
+                old["ingested_from"] = "google_sheet"
     result = build_dataset(
         [{"provider": "google_sheet", "board": "daily", "enabled": True}],
         previous=previous, fetch=lambda board: jobs)
+    active_keys = {(j["source"], j["source_id"]) for j in jobs}
+    for item in result["jobs"]:
+        if item.get("ingested_from") == "google_sheet" and (
+                item.get("source"), item.get("source_id")) not in active_keys:
+            item["status"] = "not_verified_this_run"
     result["google_sheet_sync"] = {"source": SOURCE, **counts,
                                    "read_mode": "service_account" if os.getenv(
                                        "GOOGLE_SHEETS_SERVICE_ACCOUNT_JSON") else "public_csv"}
