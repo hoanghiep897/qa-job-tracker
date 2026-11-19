@@ -50,4 +50,32 @@ $("#csv").onchange=async e=>{const f=e.target.files[0];if(!f)return;try{if(f.siz
 function escapeCsv(x){const s=String(x??"");return /[",\r\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s}
 $("#export").onclick=()=>{const r=$("#role").value,l=$("#location").value;const data=all.filter(j=>(!r||j.role===r)&&(!l||j.location===l));const keys=["source","source_id","company","title","location","description","url","role","skills"];const text=[keys.join(","),...data.map(j=>keys.map(k=>escapeCsv(k==="skills"?j.skills.join("; "):j[k])).join(","))].join("\r\n");const blob=new Blob(["\uFEFF"+text],{type:"text/csv;charset=utf-8"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="qa_jobs_filtered.csv";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};
 populate();render();
+async function loadPublishedJobs(){
+  try{
+    const response=await fetch("./data/jobs.json",{cache:"no-store"});
+    if(!response.ok) return;
+    const payload=await response.json();
+    if(!Array.isArray(payload.jobs)||!payload.jobs.length) return;
+    if($("#csv").files.length) return;
+    all=payload.jobs.map(j=>({
+      source:String(j.source||""),
+      source_id:String(j.source_id||""),
+      company:String(j.company||"Unknown"),
+      title:String(j.title||""),
+      location:String(j.location||""),
+      url:String(j.url||""),
+      role:String(j.role||classify(j.title||"")),
+      skills:Array.isArray(j.skills)?j.skills.filter(x=>typeof x==="string"):[]
+    }));
+    isDemo=false;
+    $("#notice").style.display="none";
+    populate();render();
+    const updated=payload.updated_at?new Date(payload.updated_at).toLocaleString("vi-VN"):"Chưa rõ";
+    $("#dataStatus").textContent=all.length+" bản ghi JD đã quan sát từ các nguồn ATS công khai · Cập nhật: "+updated+
+      " · "+(payload.sources_succeeded||[]).length+" nguồn đồng bộ thành công"+
+      (payload.sources_failed?.length?" · "+payload.sources_failed.length+" nguồn lỗi":"")+
+      " · Không đại diện toàn bộ thị trường";
+  }catch(err){console.warn("Cannot read published dataset:",err)}
+}
+loadPublishedJobs();
 </script></body></html>
