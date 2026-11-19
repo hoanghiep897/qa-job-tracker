@@ -32,8 +32,8 @@ SKILLS = {
 ROLE_RE = [
     ("SDET", r"\bsdet\b|software development engineer in test"),
     ("QA Lead", r"\b(?:qa|test|quality)\s*(?:lead|manager)\b|\bhead of qa\b"),
-    ("Automation QA", r"\b(?:automation|automated|test automation)\b"),
-    ("Manual QA", r"\b(?:qa|tester|testing|quality assurance|test engineer)\b"),
+    ("Automation QA", r"\b(?:automation|automated|test automation)\b|kiểm thử tự động"),
+    ("Manual QA", r"\b(?:qa|qc|tester|testing|quality assurance|test engineer)\b|kiểm thử|kiểm tra phần mềm"),
 ]
 
 def tags(text: str) -> list[str]:
