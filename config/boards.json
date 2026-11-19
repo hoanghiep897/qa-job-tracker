@@ -46,5 +46,11 @@
     "board": "agility.io",
     "company": "Agility IO",
     "enabled": true
+  },
+  {
+    "provider": "lever",
+    "board": "binance",
+    "company": "Binance",
+    "enabled": true
   }
 ]
