@@ -1,8 +1,9 @@
 import unittest
+from urllib.error import HTTPError
 from unittest.mock import patch
 from tracker.licensed_html import (
     canonical_url, discover_links, parse_job, collect_licensed, schema_jobs,
-    parse_page,
+    parse_page, robots_allowed,
 )
 
 BASE = "https://www.topcv.vn/tim-viec-lam-tester"
@@ -24,6 +25,25 @@ HTML_JOB = """
 """
 
 class LicensedHTMLTests(unittest.TestCase):
+    def test_robots_allows_normal_search_when_rules_allow_root(self):
+        class Response:
+            status = 200
+            url = "https://itviec.com/robots.txt"
+            def read(self, n):
+                return b"User-agent: *\\nDisallow: /subscriptions/new\\nAllow: /\\n"
+            def __enter__(self):
+                return self
+            def __exit__(self, *args):
+                pass
+        with patch("tracker.licensed_html.urlopen", return_value=Response()):
+            self.assertTrue(robots_allowed("https://itviec.com/it-jobs?query=tester", "itviec"))
+
+    def test_robots_http_failure_is_not_reported_as_a_disallow(self):
+        url = "https://itviec.com/robots.txt"
+        with patch("tracker.licensed_html.urlopen", side_effect=HTTPError(url, 403, "Forbidden", {}, None)):
+            with self.assertRaisesRegex(RuntimeError, "NOT proof"):
+                robots_allowed("https://itviec.com/it-jobs?query=tester", "itviec")
+
     def test_validate_urls(self):
         self.assertEqual(canonical_url(TOPCV_JOB+"?utm_source=test", "topcv"), TOPCV_JOB)
         for url in ["http://www.topcv.vn/viec-lam/a/1.html",
