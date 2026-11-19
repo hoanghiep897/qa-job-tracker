@@ -4,6 +4,9 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/browser-collect.yml"
+      - "tracker/licensed_html.py"
+      - "tracker/browser_crawler.py"
+      - "tracker/browser_daily.py"
   schedule:
     - cron: "0 0 * * *" # 07:00 Asia/Bangkok
   workflow_dispatch:
