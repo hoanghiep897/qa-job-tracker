@@ -122,13 +122,27 @@ def fetch_board(board: dict) -> list[dict]:
                      description=x.get("content") or "") for x in items]
     if provider == "lever":
         items = request_json(f"https://api.lever.co/v0/postings/{safe}?mode=json")
-        return [dict(source=f"lever:{slug}", source_id=str(x["id"]),
-                     company=company, title=x.get("text", ""),
-                     location=(x.get("categories") or {}).get("location", ""),
-                     url=x.get("hostedUrl", ""),
-                     description=" ".join([x.get("descriptionPlain") or "",
-                         " ".join(str(z.get("text") or "") + " " + " ".join(str(c.get("text") or "") for c in (z.get("content") or [])) for z in (x.get("lists") or []))]))
-                for x in items]
+        output = []
+        for x in items:
+            parts = [str(x.get("descriptionPlain") or "")]
+            for section in x.get("lists") or []:
+                if not isinstance(section, dict):
+                    continue
+                parts.append(str(section.get("text") or ""))
+                content = section.get("content") or []
+                # Lever boards may return content as plain text, HTML, or
+                # structured list elements; never assume dict-only entries.
+                if isinstance(content, str):
+                    parts.append(content)
+                elif isinstance(content, list):
+                    parts.extend(str(c.get("text") or "") if isinstance(c, dict)
+                                 else str(c) for c in content)
+            output.append(dict(source=f"lever:{slug}", source_id=str(x["id"]),
+                               company=company, title=x.get("text", ""),
+                               location=(x.get("categories") or {}).get("location", ""),
+                               url=x.get("hostedUrl", ""),
+                               description=" ".join(parts)))
+        return output
     if provider == "ashby":
         data = request_json(f"https://api.ashbyhq.com/posting-api/job-board/{safe}")
         return [dict(source=f"ashby:{slug}", source_id=str(x.get("id") or x.get("jobUrl") or x.get("title")),
