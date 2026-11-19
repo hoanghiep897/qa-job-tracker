@@ -270,10 +270,10 @@ def relative_posted_at(raw: str, *, reference: datetime) -> str | None:
     if txt in ("dang hom qua", "hom qua", "posted yesterday", "yesterday"):
         return (reference - timedelta(days=1)).isoformat()
     m = re.fullmatch(
-        r"(?:posted\\s+|dang\\s+)?(\\d+)\\s+"
+        r"(?:posted\s+|dang\s+)?(\d+)\s+"
         r"(minutes?|mins?|phut|hours?|hrs?|gio|days?|ngay|"
         r"weeks?|tuan|months?|thang|years?|nam)"
-        r"(?:\\s+(?:ago|truoc))?",
+        r"(?:\s+(?:ago|truoc))?",
         txt,
     )
     if not m:
