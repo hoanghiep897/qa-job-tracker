@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/techjobs-probe.yml"
+      - "tracker/techjobs_diagnose.py"
   workflow_dispatch:
 permissions:
   contents: read
@@ -16,5 +17,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      - name: Diagnose documented TechJobs feed endpoints (status only)
+        run: python -m tracker.techjobs_diagnose
       - name: Probe TechJobs public feed (no publish, no secrets)
         run: python -m tracker.techjobs_probe --max-pages 2 --per-page 200
