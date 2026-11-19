@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path
@@ -23,6 +24,11 @@ from tracker.google_sheet_sync import (
     relative_posted_at, safe_job_url, safe_salary_text, source_from_link,
     validate_config,
 )
+
+def clean_sheet_cell(value: str, max_chars: int = 2000) -> str:
+    """Retain cell text without shortening genuine skill requirements to 180 chars."""
+    return re.sub(r"[\\x00-\\x08\\x0b\\x0c\\x0e-\\x1f\\x7f]+", " ", str(value or "")).strip()[:max_chars]
+
 
 DB_SCHEMA = """
 CREATE TABLE IF NOT EXISTS snapshots (
@@ -83,28 +89,28 @@ def build_rows(rows: list[list[str]], *, now: datetime | None = None) -> tuple[l
         exact = format_date(posted_raw)
         approx = None if exact else relative_posted_at(posted_raw, reference=reference)
         key = hashlib.sha256(url.encode("utf-8")).hexdigest()
-        skills_text = safe_salary_text(rec.get("skills", "")) or ""
+        skills_text = clean_sheet_cell(rec.get("skills", ""), 3000)
         public = {
             "source": source_from_link(url),
-            "sheet_source": safe_salary_text(rec.get("source", "")) or "",
+            "sheet_source": clean_sheet_cell(rec.get("source", ""), 100),
             "source_id": key[:24],
-            "company": (rec.get("company") or "")[:240],
-            "title": title[:380],
-            "location": (rec.get("location") or "")[:240],
+            "company": clean_sheet_cell(rec.get("company", ""), 240),
+            "title": clean_sheet_cell(title, 380),
+            "location": clean_sheet_cell(rec.get("location", ""), 240),
             "url": url,
             "role": role(title),
             "market_region": market_region(rec.get("location") or ""),
             "skills_text": skills_text,
             "skills": tags(title + " " + skills_text),
-            "experience_text": safe_salary_text(rec.get("experience_text", "")),
-            "salary_text": safe_salary_text(rec.get("salary_text", "")),
+            "experience_text": clean_sheet_cell(rec.get("experience_text", ""), 400) or None,
+            "salary_text": clean_sheet_cell(rec.get("salary_text", ""), 400) or None,
             "posted_at": exact or approx,
-            "posted_text": safe_salary_text(posted_raw),
+            "posted_text": clean_sheet_cell(posted_raw, 400) or None,
             "posted_at_kind": ("datePosted" if exact else
                                "estimated_from_sheet_0600" if approx else None),
             "posted_reference_at": reference.isoformat() if approx else None,
             "application_deadline": format_date(rec.get("deadline", "")),
-            "sheet_status": safe_salary_text(rec.get("status", "")),
+            "sheet_status": clean_sheet_cell(rec.get("status", ""), 120) or None,
             "ingested_from": "google_sheet",
             "sheet_row": row_number,
             "status": "observed",
