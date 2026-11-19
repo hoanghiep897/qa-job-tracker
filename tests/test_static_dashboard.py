@@ -146,7 +146,7 @@ const demoActions = [
  'chartButton("#skills","Playwright").listeners.click();',
  'if(selectedJobs().length!==3||selectedSkill!=="")throw Error("Skill toggle failed");',
  'chartButton("#skills","SQL").listeners.click();',
- 'chartButton("#roles","SDET").listeners.click();',
+ '$("#role").value="SDET";render();',
  'if(selectedJobs().length!==0)throw Error("Expected empty skill/role intersection");',
  'if($("#records").children.length!==1||$("#records").children[0].children[0].colSpan!==11)throw Error("No empty-table state");',
  '$("#clearChartFilters").listeners.click();',
