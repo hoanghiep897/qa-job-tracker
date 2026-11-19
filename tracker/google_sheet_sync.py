@@ -44,6 +44,9 @@ HEADERS = {
     "skills": ("skills", "skill", "ky nang", "ky nang yeu cau",
                "skill yeu cau cho cv", "ky nang yeu cau cho cv",
                "yeu cau", "yeu cau cong viec", "cong nghe"),
+    "experience_text": ("kinh nghiem", "kinh nghiem level", "experience",
+                        "experience level", "level", "so nam kinh nghiem",
+                        "yeu cau kinh nghiem"),
     "posted_at": ("date posted", "posted at", "posted date", "ngay dang",
                   "ngay dang tin", "ngay dang tuyen", "ngay tuyen dung"),
     "deadline": ("deadline", "han ung tuyen", "han nop ho so",
@@ -170,6 +173,11 @@ def find_headers(rows: list[list[str]]) -> tuple[int, dict[str, int]]:
         fields = {}
         for idx, label in enumerate(row):
             key = norm(label)
+            # Recognize columns with an owner-specified reference date.
+            # Example: "Ngày đăng (tính từ 19/11/2026)".
+            if key.startswith("ngay dang tinh tu ") and "posted_at" not in fields:
+                fields["posted_at"] = idx
+                continue
             for field, aliases in NORMALIZED_ALIASES.items():
                 if key in aliases and field not in fields:
                     fields[field] = idx
@@ -286,6 +294,10 @@ def extract_jobs(rows: list[list[str]]) -> tuple[list[dict], dict]:
             "description": (record.get("description", "") + " " +
                             record.get("skills", ""))[:18000],
             "posted_at": format_date(record.get("posted_at", "")),
+            # Relative labels refer to the Sheet's capture date, not today.
+            # Preserve them verbatim instead of inventing timestamps.
+            "posted_text": safe_salary_text(record.get("posted_at", "")),
+            "experience_text": safe_salary_text(record.get("experience_text", "")),
             "posted_at_kind": "datePosted" if format_date(record.get("posted_at", "")) else None,
             "application_deadline": format_date(record.get("deadline", "")),
             "salary": safe_salary(record),
