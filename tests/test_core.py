@@ -26,6 +26,36 @@ class CoreTests(unittest.TestCase):
         self.assertIn("Postman SQL", jobs[0]["description"])
         self.assertIn("Selenium", jobs[0]["description"])
 
+
+    def test_greenhouse_source_posted_date(self):
+        payload = {"jobs": [{"id": 10, "title": "QA Engineer",
+            "location": {"name": "Hanoi"}, "first_published": "2026-11-01T08:00:00Z",
+            "absolute_url": "https://example.com/jobs/10"}]}
+        with patch("tracker.core.request_json", return_value=payload):
+            jobs = fetch_board({"provider": "greenhouse", "board": "example"})
+        self.assertEqual(jobs[0]["posted_at"], "2026-11-01T08:00:00Z")
+        self.assertIsNone(jobs[0]["salary"])
+        self.assertIsNone(jobs[0]["application_deadline"])
+
+    def test_ashby_public_compensation(self):
+        payload = {"jobs": [{"id":"a1", "title":"SDET", "location":"Remote",
+            "publishedAt":"2026-11-12T00:00:00Z",
+            "compensation":{"summaryComponents":[{"compensationType":"Salary",
+                "minValue":40000,"maxValue":60000,"currencyCode":"USD",
+                "interval":"year"}]}}]}
+        with patch("tracker.core.request_json", return_value=payload) as fn:
+            jobs = fetch_board({"provider":"ashby","board":"example"})
+        self.assertIn("includeCompensation=true", fn.call_args.args[0])
+        self.assertEqual(jobs[0]["salary"]["max"], 60000)
+        self.assertEqual(jobs[0]["posted_at_kind"],"last_published")
+
+    def test_lever_does_not_treat_created_at_as_posted_at(self):
+        with patch("tracker.core.request_json", return_value=[{
+            "id":"x","text":"QA Engineer","createdAt":1730000000000}]):
+            jobs = fetch_board({"provider":"lever","board":"example"})
+        self.assertIsNone(jobs[0]["posted_at"])
+        self.assertEqual(jobs[0]["source_created_at"],1730000000000)
+
     def test_upsert_preserves_first_seen(self):
         with tempfile.TemporaryDirectory() as temp:
             db = connect(str(Path(temp) / "jobs.db"))

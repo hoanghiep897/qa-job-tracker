@@ -95,3 +95,13 @@ python -m unittest discover -s tests -v
 The browser dashboard now adds filters for Vietnam, Southeast Asia, remote/unspecified and other observed locations, plus a 7-day / 30-day **first observed** filter. Results are exploratory: regional and remote listings **are not assumed eligible for Vietnam candidates**. Country classification is rule-based and may need manual review. The dashboard visualizes source observations, not headcount or a representative national market sample.
 
 The pipeline assigns `market_region` for each job, including historical records, while retaining `first_seen`, `last_seen` and verification status. This still runs on GitHub Actions + JSON with no hosted database. The data pipeline's automated updates do not need Vercel redeploys; changes to `index.html` do.
+
+## v0.4 — Salary and recruitment dates
+
+The **JD Explorer** includes **Mức lương**, **Ngày đăng**, and **Hạn ứng tuyển**, and CSV export includes these fields.
+
+- `posted_at` is used only when the ATS provides an explicit publication timestamp. Greenhouse's `first_published` is an initial publication date. Ashby's `publishedAt` may reflect its latest publication/update, so the browser labels it `(cập nhật)`. Lever's `createdAt` is not a publication date, and is **not displayed** as one.
+- `application_deadline` is empty for ATS feeds that do not expose a verified field. **Never** infer the deadline from `first_seen`, `last_seen`, or job age.
+- `salary` requires a published numeric range with currency and pay interval. Displayed as reported, without conversion. Multicomponent/ambiguous compensation is omitted. Missing values display `Không công bố`; they do not imply an employer offers no compensation.
+- CSV uploads may include `posted_at`, `application_deadline`, `salary_min`, `salary_max`, `salary_currency`, `salary_period`. These must be sourced from actual job advertisements.
+- New ATS fields populate on the next successful scheduled collection; historical records without source metadata remain blank. No paid API/database required.

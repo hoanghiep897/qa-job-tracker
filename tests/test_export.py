@@ -18,13 +18,18 @@ class ExportTests(unittest.TestCase):
         boards = [{"provider":"greenhouse","board":"example","enabled":True}]
         item = dict(source="greenhouse:example",source_id="123",title="QA Automation Engineer",
                     company="Example",location="Hanoi",url="https://example.com/jobs/123",
-                    description="Playwright, TypeScript")
+                    description="Playwright, TypeScript",
+                    posted_at="2026-11-01T12:00:00Z", posted_at_kind="first_published",
+                    salary={"min":2000,"max":3000,"currency":"USD","period":"month"})
         initial = build_dataset(boards, fetch=lambda b:[item], observed_at="2026-11-18T00:00:00+00:00")
         later = build_dataset(boards, previous=initial, fetch=lambda b:[item], observed_at="2026-11-19T00:00:00+00:00")
         self.assertEqual(len(later["jobs"]),1)
         self.assertEqual(later["jobs"][0]["first_seen"],"2026-11-18T00:00:00+00:00")
         self.assertIn("Playwright",later["jobs"][0]["skills"])
         self.assertNotIn("description",later["jobs"][0])
+        self.assertEqual(later["jobs"][0]["salary"]["currency"], "USD")
+        self.assertEqual(later["jobs"][0]["posted_at"], "2026-11-01T12:00:00Z")
+        self.assertIsNone(later["jobs"][0]["application_deadline"])
         self.assertEqual(later["jobs"][0]["market_region"], "Vietnam")
     def test_dont_destroy_last_dataset_on_failure(self):
         boards = [{"provider":"ashby","board":"example","enabled":True}]
