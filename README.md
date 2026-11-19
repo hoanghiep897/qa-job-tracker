@@ -89,3 +89,9 @@ Run locally:
 python -m tracker.export --config config/boards.json --output data/jobs.json
 python -m unittest discover -s tests -v
 ```
+
+## v0.3 — Geographic coverage and freshness controls
+
+The browser dashboard now adds filters for Vietnam, Southeast Asia, remote/unspecified and other observed locations, plus a 7-day / 30-day **first observed** filter. Results are exploratory: regional and remote listings **are not assumed eligible for Vietnam candidates**. Country classification is rule-based and may need manual review. The dashboard visualizes source observations, not headcount or a representative national market sample.
+
+The pipeline assigns `market_region` for each job, including historical records, while retaining `first_seen`, `last_seen` and verification status. This still runs on GitHub Actions + JSON with no hosted database. The data pipeline's automated updates do not need Vercel redeploys; changes to `index.html` do.

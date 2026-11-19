@@ -18,6 +18,18 @@ QA_TITLE = re.compile(
 )
 MAX_JOBS = 2500
 
+def market_region(location: str) -> str:
+    """Conservative geographic label; SEA is not assumed Vietnam."""
+    place = (location or "").lower()
+    if re.search(r"\b(?:viet\s?nam|ha\s?noi|hanoi|ho chi minh|hcmc|saigon|sai gon|da nang|danang)\b", place):
+        return "Vietnam"
+    if re.search(r"\b(?:south\s?east asia|southeast asia|asean)\b", place):
+        return "Southeast Asia"
+    if re.search(r"\b(?:any location|anywhere|worldwide|global|remote)\b", place):
+        return "Remote / unspecified"
+    return "Other / unspecified"
+
+
 def relevant(title: str) -> bool:
     return bool(QA_TITLE.search(title or ""))
 
@@ -31,6 +43,7 @@ def public_job(item: dict, observed_at: str) -> dict:
         "company": str(item.get("company") or "Unknown").strip(),
         "title": title,
         "location": str(item.get("location") or "").strip(),
+        "market_region": market_region(str(item.get("location") or "")),
         "url": str(item.get("url") or "").strip(),
         "role": role(title),
         "skills": tags(title + " " + str(item.get("description") or "")),
@@ -82,6 +95,8 @@ def build_dataset(boards: list[dict], previous: dict | None = None, fetch=fetch_
             item = dict(item)
             item["status"] = "not_verified_this_run"
             merged[key] = item
+    for job in merged.values():
+        job["market_region"] = market_region(job.get("location", ""))
     jobs = sorted(merged.values(),
                   key=lambda j: (j.get("last_seen") or "", j.get("source") or ""),
                   reverse=True)[:MAX_JOBS]
