@@ -5,5 +5,5 @@ venv/
 *.pyc
 .env
 .streamlit/secrets.toml
-data/
-config/boards.json
+data/*
+!data/jobs.json
