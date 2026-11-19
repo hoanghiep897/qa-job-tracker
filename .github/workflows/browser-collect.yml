@@ -1,4 +1,4 @@
-name: Daily licensed browser QA job scan
+name: Manual licensed browser QA job diagnostics
 on:
   push:
     branches: [main]
@@ -8,8 +8,6 @@ on:
       - "tracker/browser_crawler.py"
       - "tracker/browser_daily.py"
       - "config/boards.json"
-  schedule:
-    - cron: "0 0 * * *" # 07:00 Asia/Bangkok
   workflow_dispatch:
 permissions:
   contents: write
