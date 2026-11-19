@@ -29,6 +29,16 @@ class ScriptParser(html.parser.HTMLParser):
             self.script.append(data)
 
 class StaticDashboardTests(unittest.TestCase):
+    def test_source_label_links_to_original_job(self):
+        html = (ROOT / "index.html").read_text(encoding="utf-8")
+        # Both Nguồn and Link JD open the *same original* j.url safely.
+        self.assertIn('sourceLink.href=j.url', html)
+        self.assertIn('sourceLink.textContent=j.source||"Mở nguồn"', html)
+        self.assertIn('sourceLink.target="_blank"', html)
+        self.assertIn('sourceLink.rel="noopener noreferrer"', html)
+        self.assertIn('link.href=j.url', html)
+        self.assertIn('sourceTd.textContent=j.source||"—"', html)
+
     def test_html_and_javascript_syntax(self):
         html = (ROOT / "index.html").read_text(encoding="utf-8")
         parser = ScriptParser()
