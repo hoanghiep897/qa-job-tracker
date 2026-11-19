@@ -55,8 +55,17 @@ function formatDate(input){
 }
 function formatPosted(job){
  if(!job.posted_at)return job.posted_text||"Không công bố";
+ if(job.posted_at_kind==="estimated_from_sheet_0600"){
+   const dt=new Date(job.posted_at);
+   if(Number.isNaN(dt.getTime()))return job.posted_text||"Không công bố";
+   const fmt=new Intl.DateTimeFormat("vi-VN",{
+     timeZone:"Asia/Ho_Chi_Minh",day:"2-digit",month:"2-digit",year:"numeric",
+     hour:"2-digit",minute:"2-digit",hourCycle:"h23"
+   });
+   return fmt.format(dt)+" (ước tính)";
+ }
  const v=formatDate(job.posted_at);
- if(v==="Không công bố")return v;
+ if(v==="Không công bố")return job.posted_text||v;
  return v+(job.posted_at_kind==="last_published"?" (cập nhật)":"");
 }
 function parseSalaryCsv(j){
@@ -101,6 +110,7 @@ async function loadPublishedJobs(){
       first_seen:String(j.first_seen||""),
       posted_at:j.posted_at||null,
       posted_text:String(j.posted_text||""),
+      posted_reference_at:String(j.posted_reference_at||""),
       experience_text:String(j.experience_text||""),
       posted_at_kind:j.posted_at_kind||null,
       application_deadline:j.application_deadline||null,
