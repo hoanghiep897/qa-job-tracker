@@ -54,6 +54,8 @@ def public_job(item: dict, observed_at: str) -> dict:
         "posted_at_kind": item.get("posted_at_kind") or None,
         "application_deadline": item.get("application_deadline") or None,
         "salary": item.get("salary") if isinstance(item.get("salary"), dict) else None,
+        "salary_text": str(item.get("salary_text") or "").strip()[:180] or None,
+        "ingested_from": item.get("ingested_from") if item.get("ingested_from") == "google_sheet" else None,
     }
 
 def build_dataset(boards: list[dict], previous: dict | None = None, fetch=fetch_board,
@@ -85,7 +87,7 @@ def build_dataset(boards: list[dict], previous: dict | None = None, fetch=fetch_
                 if old:
                     job["first_seen"] = old.get("first_seen") or today
                     # Preserve verified source metadata if the source later omits it.
-                    for field in ("posted_at", "posted_at_kind", "application_deadline", "salary"):
+                    for field in ("posted_at", "posted_at_kind", "application_deadline", "salary", "salary_text"):
                         if job[field] is None and old.get(field) is not None:
                             job[field] = old[field]
                 merged[key] = job
