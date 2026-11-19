@@ -109,7 +109,8 @@ def schema_jobs(page: JobHTML):
             for item in obj:
                 yield from nodes(item)
         elif isinstance(obj, dict):
-            if obj.get("@type") == "JobPosting" or "JobPosting" in obj.get("@type", []):
+            types = obj.get("@type") or []
+            if types == "JobPosting" or (isinstance(types, list) and "JobPosting" in types):
                 yield obj
             for k in ("@graph", "mainEntity"):
                 if k in obj:
@@ -206,6 +207,7 @@ def fetch_html(url: str, *, platform: str) -> str:
     request = Request(url, headers={"User-Agent": USER_AGENT, "Accept": "text/html"})
     try:
         with urlopen(request, timeout=20) as response:
+            canonical_url(response.url, platform)  # Reject redirects beyond approved host.
             if response.status != 200:
                 raise RuntimeError(f"HTTP {response.status}")
             raw = response.read(MAX_HTML_BYTES + 1)
@@ -242,7 +244,7 @@ def collect_licensed(board: dict, *, fetch=fetch_html, sleep=time.sleep,
         raise ValueError("Add permitted search URLs first")
     max_pages = min(max(int(board.get("max_search_pages", 1)), 1), 3)
     max_detail = min(max(int(board.get("max_job_details", 12)), 1), 30)
-    delay = max(float(board.get("delay_seconds", 1.5)), 1.0)
+    delay = min(max(float(board.get("delay_seconds", 1.5)), 1.0), 30.0)
     candidate_urls = []
     for seed in seeds[:max_pages]:
         url = canonical_url(seed, platform)
