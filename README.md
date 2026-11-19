@@ -174,3 +174,45 @@ Next steps after evaluating the live response: review the TechJobs feed terms ag
 ### REST API fallback (19 Nov 2026)
 
 The initial GitHub Actions feed trial returned HTTP 404 for `/feeds/jobs.json`, its unfiltered form, the paginated form, and `/feeds/openapi.json`. A second **read-only** test uses the [official developer REST endpoint](https://techjobs.vn/developers) `/api/v1/jobs` with six QA-related queries, `limit=10`, `page=1`, `response_format=detailed` and 2-second spacing. Anonymous REST search may return truncated results (`notice`); reported totals and returned titles are separately labeled. The REST terms restrict building competing job databases. This test prints summary counts only, does not store jobs, and does not update the dashboard. Do not claim the API is accessible until the live workflow succeeds.
+
+## v0.9 — Google Sheets → QA Job Tracker daily (07:00 Vietnam time)
+
+This deployment uses the owner-maintained spreadsheet:
+
+https://docs.google.com/spreadsheets/d/1vl0slYeHVb_yshR2AhczcVppCtBXRCJCty8rXYvkMGA/edit
+
+The separate workflow `.github/workflows/google-sheet-sync.yml` runs every day at **00:00 UTC = 07:00 Vietnam time (UTC+7)**, can be launched manually, and also runs once when this workflow is merged. GitHub scheduled actions may start later than the exact cron time; make sure spreadsheet edits are saved before 07:00. It does not require a personal computer, database, or Vercel redeployment. The existing 10:15 Vietnam-time ATS collector continues independently; they share a concurrency group.
+
+### Grant read-only access (choose one)
+
+**Option A — simple public CSV:** Google Sheets → Share → General access → **Anyone with the link** → **Viewer**. Then the action uses Google's direct CSV export with the current spreadsheet ID, without a credential. Be aware that anyone with the link can read the spreadsheet, so avoid putting private personal data in it. This only enables reading; the workflow never edits the spreadsheet.
+
+**Option B — retain a private spreadsheet:** Enable the **Google Sheets API** for a Google Cloud project, create a service account and JSON key, and share the *specific Google Sheet* as **Viewer** with the service account's email address (not your own email). In GitHub → repo Settings → Secrets and variables → Actions, set repository secret named **`GOOGLE_SHEETS_SERVICE_ACCOUNT_JSON`** to the **entire service-account JSON**. Never commit the secret, paste it in issues, or share it in chat. If the secret is present, the crawler uses read-only OAuth scope `spreadsheets.readonly` automatically; otherwise it uses public CSV export. See [Google Workspace service account credentials](https://developers.google.com/workspace/guides/create-credentials).
+
+The first tab is selected by default. If the JD data is on a different tab, open that tab in Google Sheets, copy its numeric `gid` from the URL (`#gid=123456`), and replace `gid: null` in `config/google_sheet.json` with that integer.
+
+### Required columns and accepted labels
+
+The importer scans the first 20 rows for a column-header row. Two columns are mandatory: a QA/Tester/SDET **job title** (e.g. `Vị trí tuyển dụng`, `Vị trí`, `Title`) and an **original job URL** (e.g. `Link JD`, `Link`, `URL`). A valid external `http(s)` JD link is required for each published row. Other supported aliases include:
+
+| Field | Example header |
+| --- | --- |
+| Company | `Tên công ty`, `Công ty`, `Company` |
+| Location | `Địa điểm làm việc`, `Địa điểm`, `Location` |
+| Skills | `Kỹ năng`, `Skills` |
+| Description | `Mô tả công việc`, `Description` |
+| Posting date | `Ngày đăng` (YYYY-MM-DD or DD/MM/YYYY) |
+| Deadline | `Hạn ứng tuyển` |
+| Status | `Trạng thái` — `Đã đóng`, `Hết hạn`, `Ngừng tuyển` rows are excluded |
+
+Salary is published only when numeric `salary_min`, `salary_max`, `salary_currency` and `salary_period` (month, year, hour) are present and valid. Arbitrary salary text is deliberately **not** converted or invented.
+
+The sync keeps source metadata (title, company, location, link, verified source dates and skill labels), **not full descriptions**. It filters QA/Tester/SDET roles, deduplicates identical links (including differences only in `utm_*` parameters), and retains previously observed ATS and Sheet records. Jobs removed from the current Sheet are marked `not_verified_this_run` rather than assumed closed. Empty/malformed/inaccessible Sheet responses make the job fail *before* publishing, preserving the previous `data/jobs.json`. The sync displays only counts and error categories in the log; it never prints service-account keys.
+
+**Important:** This conversation could not read the exact spreadsheet contents, so the column mapping is flexible rather than verified against its actual header row. After granting access, check the first GitHub Actions run at **Actions → Sync owner Google Sheet to QA dashboard**, then refresh your existing Vercel dashboard. Public display rights for third-party job metadata remain the sheet owner's responsibility; collecting a source into a spreadsheet does not automatically grant rights to republish entire external JDs.
+
+Manual local run (CSV-public sheet or configured service-account environment):
+
+```bash
+python -m tracker.google_sheet_sync --config config/google_sheet.json --output data/jobs.json
+```
