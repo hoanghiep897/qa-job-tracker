@@ -223,13 +223,34 @@ def fetch_html(url: str, *, platform: str) -> str:
     return html
 
 def robots_allowed(url: str, platform: str) -> bool:
+    """Distinguish an explicit robots disallow from a failed robots fetch.
+
+    RobotFileParser.read() silently treats HTTP 4xx as a disallow.  That can
+    incorrectly be reported as a valid policy if a CI runner is denied.
+    """
+    from urllib.error import HTTPError
+    canonical_url(url, platform)
     parsed = urlsplit(url)
-    robots = RobotFileParser()
-    robots.set_url(f"https://{parsed.hostname}/robots.txt")
+    robots_url = f"https://{parsed.hostname}/robots.txt"
+    request = Request(robots_url, headers={"User-Agent": USER_AGENT,
+                                         "Accept": "text/plain"})
     try:
-        robots.read()
-    except Exception as exc:
-        raise RuntimeError("Cannot verify robots policy; refuse collection") from exc
+        with urlopen(request, timeout=15) as response:
+            canonical_url(response.url, platform)
+            if response.status != 200:
+                raise RuntimeError(f"Unable to read robots.txt (HTTP {response.status})")
+            content = response.read(200_001)
+            if len(content) > 200_000:
+                raise RuntimeError("robots.txt is too large to validate")
+    except HTTPError as exc:
+        raise RuntimeError(
+            f"Unable to read robots.txt (HTTP {exc.code}); this is NOT proof "
+            "that robots policy disallows the URL"
+        ) from exc
+    except URLError as exc:
+        raise RuntimeError("Unable to read robots.txt (network error); policy unknown") from exc
+    robots = RobotFileParser()
+    robots.parse(content.decode("utf-8-sig", errors="replace").splitlines())
     return robots.can_fetch(USER_AGENT, url)
 
 def collect_licensed(board: dict, *, fetch=fetch_html, sleep=time.sleep,
