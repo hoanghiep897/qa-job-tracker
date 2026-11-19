@@ -73,6 +73,90 @@ class StaticDashboardTests(unittest.TestCase):
         self.assertIn("<th>Link JD</th>", html)
         self.assertIn("<th>Nguồn</th>", html)
 
+    def test_interactive_role_skill_filters_are_wired(self):
+        html = (ROOT / "index.html").read_text(encoding="utf-8")
+        self.assertIn('id="chartFilterStatus"', html)
+        self.assertIn('id="clearChartFilters"', html)
+        self.assertIn('function toggleRole(name)', html)
+        self.assertIn('function toggleSkill(name)', html)
+        self.assertIn('ignoreRole=false,ignoreSkill=false', html)
+        self.assertIn('j.skills.includes(selectedSkill)', html)
+        self.assertIn('selectedJobs({ignoreRole:true})', html)
+        self.assertIn('selectedJobs({ignoreSkill:true})', html)
+        self.assertIn('content.setAttribute("aria-pressed"', html)
+        self.assertIn('content.addEventListener("click",()=>onSelect(name))', html)
+        self.assertIn('selectedSkill="";$("#role").value="";render()', html)
+        self.assertIn('cell.colSpan=11', html)
+        self.assertNotIn('id="reset"', html)
+        self.assertNotIn('Dữ liệu demo</button>', html)
+
+    def test_chart_filters_click_combine_toggle_and_clear(self):
+        html = (ROOT / "index.html").read_text(encoding="utf-8")
+        parser = ScriptParser()
+        parser.feed(html)
+        script = "\n".join(parser.script)
+        marker = '\npopulate();render();\nasync function loadPublishedJobs()'
+        self.assertIn(marker, script)
+        script = script.split(marker, 1)[0]
+        harness = r"""
+const vm = require("node:vm");
+class FakeElement {
+  constructor(tag="div"){
+    this.tagName=tag;this.children=[];this.dataset={};this.style={};
+    this.listeners={};this.attributes={};this.value="";this.textContent="";
+  }
+  append(...children){this.children.push(...children)}
+  replaceChildren(...children){this.children=[...children]}
+  addEventListener(event,cb){this.listeners[event]=cb}
+  setAttribute(key,value){this.attributes[key]=value}
+  focus(){}
+  blur(){}
+}
+const nodes={};
+const get=(selector)=>nodes[selector]||(nodes[selector]=new FakeElement());
+function findButtons(node){
+  if(!node)return [];
+  return [node,...node.children.flatMap(findButtons)].filter(x=>x.className==="bar-choice");
+}
+const document={
+  querySelector:get,
+  createElement:(tag)=>new FakeElement(tag),
+  querySelectorAll:(selector)=>findButtons(get(selector.split(" ")[0]))
+};
+const ctx=vm.createContext({document,Date,Intl,Option:class{},console,URL,Blob});
+vm.runInContext(process.argv[1],ctx);
+const demoActions = [
+ 'all=[',
+ ' {title:"Manual QA Tester",role:"Manual QA",company:"A",location:"Hà Nội",market_region:"Vietnam",skills:["Postman","SQL"],source:"TopCV",url:""},',
+ ' {title:"Automation QA",role:"Automation QA",company:"B",location:"Hà Nội",market_region:"Vietnam",skills:["Playwright","SQL"],source:"ITviec",url:""},',
+ ' {title:"SDET",role:"SDET",company:"C",location:"Remote",market_region:"Remote / unspecified",skills:["Playwright"],source:"Upwork",url:""}',
+ '];selectedSkill="";$("#role").value="";$("#location").value="";$("#region").value="";$("#age").value="0";render();',
+ 'const chartButton=(id,name)=>Array.from(document.querySelectorAll(id+" .bar-choice")).find(b=>b.dataset.filterValue===name);',
+ 'if(!chartButton("#skills","Playwright"))throw Error("No clickable skill");',
+ 'chartButton("#skills","Playwright").listeners.click();',
+ 'if(selectedJobs().length!==2||selectedSkill!=="Playwright")throw Error("Skill click failed");',
+ 'if($("#chartFilterStatus").hidden)throw Error("Filter summary hidden");',
+ 'if(!chartButton("#roles","SDET"))throw Error("No clickable role");',
+ 'chartButton("#roles","SDET").listeners.click();',
+ 'if(selectedJobs().length!==1||$("#role").value!=="SDET")throw Error("Role intersection failed");',
+ 'if(chartButton("#roles","SDET").attributes["aria-pressed"]!=="true")throw Error("Selected role not accessible");',
+ 'if($("#records").children.length!==1)throw Error("JD Explorer not filtered");',
+ 'chartButton("#roles","SDET").listeners.click();',
+ 'if(selectedJobs().length!==2||$("#role").value!=="")throw Error("Role toggle failed");',
+ 'chartButton("#skills","Playwright").listeners.click();',
+ 'if(selectedJobs().length!==3||selectedSkill!=="")throw Error("Skill toggle failed");',
+ 'chartButton("#skills","SQL").listeners.click();',
+ 'chartButton("#roles","SDET").listeners.click();',
+ 'if(selectedJobs().length!==0)throw Error("Expected empty skill/role intersection");',
+ 'if($("#records").children.length!==1||$("#records").children[0].children[0].colSpan!==11)throw Error("No empty-table state");',
+ '$("#clearChartFilters").listeners.click();',
+ 'if(selectedJobs().length!==3||selectedSkill!==""||$("#role").value!=="")throw Error("Clear button failed");'
+].join("\n");
+vm.runInContext(demoActions,ctx);
+"""
+        result = subprocess.run(["node", "-e", harness, script], capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+
     def test_html_and_javascript_syntax(self):
         html = (ROOT / "index.html").read_text(encoding="utf-8")
         parser = ScriptParser()
