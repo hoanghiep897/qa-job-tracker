@@ -39,6 +39,15 @@ class StaticDashboardTests(unittest.TestCase):
         self.assertIn('link.href=j.url', html)
         self.assertIn('sourceTd.textContent=j.source||"—"', html)
 
+    def test_posting_labels_and_experience_are_rendered(self):
+        html = (ROOT / "index.html").read_text(encoding="utf-8")
+        self.assertIn("<th>Kinh nghiệm / Level</th>", html)
+        self.assertIn("if(!job.posted_at)return job.posted_text", html)
+        self.assertIn('j.experience_text||"Không công bố"', html)
+        self.assertIn('posted_text:String(j.posted_text||"")', html)
+        self.assertIn('experience_text:String(j.experience_text||"")', html)
+        self.assertIn('"experience_text","skills","posted_at","posted_text"', html)
+
     def test_html_and_javascript_syntax(self):
         html = (ROOT / "index.html").read_text(encoding="utf-8")
         parser = ScriptParser()
