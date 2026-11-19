@@ -138,3 +138,15 @@ The first GitHub Actions run found that all three licensed HTML search URLs were
 An optional \`robots_override_authorized: true\` flag allows a source owner to honor **specific written permission that explicitly overrides robots.txt restrictions**. It defaults to **false** for ITviec, TopCV and VietnamWorks. The \`permission_confirmed\` flag does not imply such an override. Enable the additional flag only when your agreement actually covers it; no captcha solving, HTTP 403/429 workaround, or traffic obfuscation is performed.
 
 If an official authenticated or licensed API/feed was supplied, prefer that endpoint rather than public HTML crawling. Even with a robots override, pages with blocking or JS-only content may yield no data; inspect Actions logs and request an authorized feed from the provider.
+
+## v0.7 — Daily Playwright browser collector (pilot: ITviec)
+
+A separate workflow, `.github/workflows/browser-collect.yml`, starts Chromium in a fresh GitHub-hosted Ubuntu runner around **07:00 Vietnam time** (`00:00 UTC`) each day, and supports manual dispatch. It is independent of the existing ATS collector and uses the same concurrency group to protect dataset updates. No laptop needs to be on. GitHub Actions cron may execute later than scheduled.
+
+The initial pilot is **ITviec only** with one search URL, a maximum of five job-detail requests, and at least two seconds between requests. TopCV and VietnamWorks are **not browser-enabled**. It renders JavaScript, extracts JobPosting JSON-LD and reuses existing source filtering/metadata export. The browser has no saved session, login, stealth settings, rotating IPs or CAPTCHA solving.
+
+Only run within the scope of your platform authorization. Both `permission_confirmed` and `browser_enabled` must be true. The crawler honors `robots.txt` unless **separate, explicit contractual authorization** allows overriding it via `robots_override_authorized: true`; the default remains false. Encountering HTTP 401/403/429, an authentication challenge, or verification stops that source. A successful HTTP response alone does not guarantee job links are detectable; site-specific selectors may need maintenance.
+
+If the browser scan fails, the workflow fails and **does not overwrite** the published `data/jobs.json`. On success the dashboard reads the new JSON automatically. The first push of this workflow triggers a real smoke run; subsequent runs follow the daily schedule or a manual run. See the GitHub Actions log for the actual results (do not assume successful collection before verifying).
+
+Run local tests without installing Playwright: `python -m unittest discover -s tests -v`. To run the real browser task locally, install Playwright + Chromium and run `python -m tracker.browser_daily --platform itviec`.
