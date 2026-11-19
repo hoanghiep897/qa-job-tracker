@@ -254,17 +254,20 @@ def collect_licensed(board: dict, *, fetch=fetch_html, sleep=time.sleep,
         candidate_urls.extend(discover_links(html, url, platform))
         sleep(delay)
     result, seen = [], set()
+    attempted = 0
     for url in candidate_urls:
-        if len(result) >= max_detail:
+        if attempted >= max_detail:
             break
         if url in seen:
             continue
         seen.add(url)
         if not check_robots(url, platform):
             continue
+        attempted += 1
         try:
             job = parse_job(fetch(url, platform=platform), url, platform)
             if job:
+                job["source"] = f"{platform}:{board.get('board', 'licensed')}"
                 result.append(job)
         except RuntimeError as exc:
             # Anti-bot protections/403 must stop this source, not be bypassed.
