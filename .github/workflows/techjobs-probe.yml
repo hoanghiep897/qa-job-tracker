@@ -5,6 +5,7 @@ on:
     paths:
       - ".github/workflows/techjobs-probe.yml"
       - "tracker/techjobs_diagnose.py"
+      - "tracker/techjobs_rest_probe.py"
   workflow_dispatch:
 permissions:
   contents: read
@@ -20,4 +21,7 @@ jobs:
       - name: Diagnose documented TechJobs feed endpoints (status only)
         run: python -m tracker.techjobs_diagnose
       - name: Probe TechJobs public feed (no publish, no secrets)
+        continue-on-error: true
         run: python -m tracker.techjobs_probe --max-pages 2 --per-page 200
+      - name: Probe official TechJobs developer REST API (no publish)
+        run: python -m tracker.techjobs_rest_probe

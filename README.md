@@ -170,3 +170,7 @@ Run manually from GitHub Actions → **TechJobs feed QA coverage probe (read onl
 Run locally: `python -m tracker.techjobs_probe --max-pages 2 --per-page 200`.
 
 Next steps after evaluating the live response: review the TechJobs feed terms against the intended public dashboard, retain both source attribution and original employer apply link, add explicit opt-in adapter and cross-source deduplication, and only then enable automatic publishing. If GitHub-hosted runners receive 403/429, stop rather than attempting evasion.
+
+### REST API fallback (19 Nov 2026)
+
+The initial GitHub Actions feed trial returned HTTP 404 for `/feeds/jobs.json`, its unfiltered form, the paginated form, and `/feeds/openapi.json`. A second **read-only** test uses the [official developer REST endpoint](https://techjobs.vn/developers) `/api/v1/jobs` with six QA-related queries, `limit=10`, `page=1`, `response_format=detailed` and 2-second spacing. Anonymous REST search may return truncated results (`notice`); reported totals and returned titles are separately labeled. The REST terms restrict building competing job databases. This test prints summary counts only, does not store jobs, and does not update the dashboard. Do not claim the API is accessible until the live workflow succeeds.
