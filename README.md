@@ -62,3 +62,11 @@ python -m unittest discover -s tests -v
 - SQLite lives on your machine; do **not** assume the database persists across free ephemeral cloud deployments.
 - Reports and scheduled collection are planned later, after validating real-source data.
 - Demo jobs are synthetic and labeled separately.
+
+## Online dashboard (static / Vercel)
+
+The root `index.html` is an additional **static dashboard** that can run on Vercel's free Hobby tier. It uses synthetic example jobs by default; CSV data is parsed and analyzed **in your browser**, never uploaded to a server. The CSV columns are `title,company,location,description,source,source_id,url` (only `title` is necessary for browser analysis). Skills are keyword-based, not AI-generated.
+
+The static dashboard is **not** the Streamlit service, has **no hosted SQLite database**, and does **not** automatically collect jobs or retain uploaded CSV after refresh. The Python/SQLite collector still runs separately on your machine. Do not assume online data persists or auto-refreshes. The two entrypoints are intentionally separate to avoid ongoing cloud costs.
+
+Production publishing is via Vercel Git integration from `main`. Deploying `index.html` needs no framework build and no server-side secrets. For a future live shared dashboard, use an approved persistent source such as a managed database or generated aggregated JSON committed by an authorized scheduled workflow.
