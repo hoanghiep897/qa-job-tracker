@@ -1,9 +1,59 @@
 {
   "schema_version": 1,
-  "updated_at": null,
-  "scope": "Selected public job boards; initial empty dataset until first successful collector run",
-  "sources_succeeded": [],
-  "sources_failed": [],
-  "source_records_read": 0,
-  "jobs": []
+  "updated_at": "2026-11-19T08:47:41+00:00",
+  "scope": "Selected public job boards; not representative of the whole market",
+  "sources_succeeded": [
+    "greenhouse:navervietnam",
+    "ashby:what3words",
+    "greenhouse:workatbackbase",
+    "ashby:colonist"
+  ],
+  "sources_failed": [
+    {
+      "source": "lever:BTSE",
+      "error": "'str' object has no attribute 'get'"
+    }
+  ],
+  "source_records_read": 65,
+  "jobs": [
+    {
+      "source": "greenhouse:workatbackbase",
+      "source_id": "8068927",
+      "company": "Backbase",
+      "title": "Senior Software Development Engineer in Test (SDET)",
+      "location": "Ho Chi Minh",
+      "url": "https://job-boards.greenhouse.io/workatbackbase/jobs/8068927",
+      "role": "SDET",
+      "skills": [
+        "Playwright",
+        "Selenium",
+        "Cypress",
+        "Java",
+        "Python",
+        "JavaScript",
+        "Jenkins",
+        "GitHub Actions"
+      ],
+      "first_seen": "2026-11-19T08:47:41+00:00",
+      "last_seen": "2026-11-19T08:47:41+00:00",
+      "status": "observed"
+    },
+    {
+      "source": "ashby:colonist",
+      "source_id": "435458c1-22bf-44cc-83a8-51ca6f5319f3",
+      "company": "Colonist",
+      "title": "QA Engineer",
+      "location": "Any Location",
+      "url": "https://jobs.ashbyhq.com/colonist/435458c1-22bf-44cc-83a8-51ca6f5319f3",
+      "role": "Manual QA",
+      "skills": [
+        "Playwright",
+        "Selenium",
+        "Cypress"
+      ],
+      "first_seen": "2026-11-19T08:47:41+00:00",
+      "last_seen": "2026-11-19T08:47:41+00:00",
+      "status": "observed"
+    }
+  ]
 }
