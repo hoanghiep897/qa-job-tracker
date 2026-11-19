@@ -136,6 +136,9 @@ def _ashby_salary(value: object) -> dict | None:
 def fetch_board(board: dict) -> list[dict]:
     """Fetch publicly listed jobs; board names are explicitly configured by the operator."""
     provider = board["provider"].lower()
+    if provider in ("itviec", "topcv", "vietnamworks"):
+        from tracker.licensed_html import collect_licensed
+        return collect_licensed(board)
     slug = board["board"]
     if not isinstance(slug, str) or not re.fullmatch(r"[A-Za-z0-9_-]+(?:\.[A-Za-z0-9_-]+)*" if provider == "ashby" else r"[A-Za-z0-9_-]+", slug):
         raise ValueError("Invalid board identifier")
