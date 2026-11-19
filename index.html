@@ -9,7 +9,7 @@ main{width:100%;max-width:1800px;margin:auto;padding:28px 20px 50px}.notice{bord
 .card{background:white;border:1px solid #e1e7ef;box-shadow:0 3px 18px #24375209;border-radius:14px;padding:20px}.card h2{margin:0 0 16px;font-size:17px}.metric{font-size:30px;font-weight:760;margin-top:5px}.muted{color:#607083;font-size:13px}.field{font-size:12px;color:#52657c;display:block;font-weight:600;margin-bottom:5px}
 select,input[type=file],input[type=text]{border:1px solid #cbd5e1;background:white;border-radius:9px;padding:10px;width:100%;max-width:100%;font:inherit;font-size:14px}
 button{padding:10px 15px;border:0;border-radius:9px;background:#175caa;color:white;font-weight:650;cursor:pointer}button.secondary{background:#edf3fb;color:#205285}
-.bar-row{margin:12px 0}.bar-head{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px}.track{height:10px;border-radius:20px;background:#edf1f7;overflow:hidden}.bar{height:100%;background:#4687cd;border-radius:20px}
+.bar-row{margin:8px 0}.bar-head{display:flex;justify-content:space-between;gap:12px;font-size:13px;margin-bottom:6px}.track{height:10px;border-radius:20px;background:#edf1f7;overflow:hidden}.bar{height:100%;background:#4687cd;border-radius:20px}.bar-choice{display:block;width:100%;border:1px solid transparent;background:transparent;color:inherit;text-align:left;padding:8px 10px;border-radius:9px;cursor:pointer;font:inherit}.bar-choice:hover{background:#f0f5fc}.bar-choice[aria-pressed="true"]{background:#e6f1ff;border-color:#6a9bcd}.bar-choice[aria-pressed="true"] .bar{background:#175caa}.bar-choice:focus-visible{outline:3px solid #175caa;outline-offset:2px}.chart-filter-status{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin:16px 0 0;padding:12px 16px;border:1px solid #bdd6f4;border-radius:10px;background:#eff6ff;font-size:13px}.chart-filter-status[hidden]{display:none}.chart-filter-status .secondary{padding:6px 12px}
 .section{margin-top:20px}.scroll{overflow-x:auto}.jd-explorer{padding:20px 16px}.jd-explorer table{width:100%;table-layout:fixed}.jd-explorer th,.jd-explorer td{overflow-wrap:break-word;word-break:normal;padding:12px 7px}.jd-explorer th:nth-child(1){width:14%}.jd-explorer th:nth-child(2){width:10%}.jd-explorer th:nth-child(3){width:8%}.jd-explorer th:nth-child(4){width:8%}.jd-explorer th:nth-child(5){width:10%}.jd-explorer th:nth-child(6){width:10%}.jd-explorer th:nth-child(7){width:12%}.jd-explorer th:nth-child(8){width:9%}.jd-explorer th:nth-child(9){width:9%}.jd-explorer th:nth-child(10){width:5%}.jd-explorer th:nth-child(11){width:5%}table{width:100%;border-collapse:collapse;font-size:13px}th{text-align:left;color:#5b6d80;background:#f7f9fd;font-weight:650}td,th{padding:13px 11px;border-bottom:1px solid #edf0f4;vertical-align:top}td a{color:#1664b4;overflow-wrap:anywhere}td a.source-link{font-weight:600;text-decoration:underline;text-underline-offset:3px}footer{color:#67788a;text-align:center;font-size:12px;margin-top:30px}.actions{display:flex;align-items:end;gap:9px}#dataStatus{margin-bottom:15px;font-size:13px;color:#50627a}
 @media(max-width:1279px){.jd-explorer table{table-layout:auto;min-width:1150px}.jd-explorer th,.jd-explorer td{padding:12px 9px}.jd-explorer th{width:auto!important}}@media(max-width:850px){.toolbar{grid-template-columns:1fr 1fr}.stats{grid-template-columns:1fr 1fr}.panels{grid-template-columns:1fr}}@media(max-width:500px){.toolbar{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.card{padding:15px}}
 </style></head>
@@ -21,12 +21,13 @@ button{padding:10px 15px;border:0;border-radius:9px;background:#175caa;color:whi
 <div><label class="field" for="location">Địa điểm</label><select id="location"><option value="">Tất cả địa điểm</option></select></div>
 <div><label class="field" for="region">Khu vực thị trường</label><select id="region"><option value="">Tất cả khu vực</option><option value="Vietnam">Việt Nam</option><option value="Southeast Asia">Đông Nam Á</option><option value="Remote / unspecified">Remote / không rõ</option><option value="Other / unspecified">Khác</option></select></div>
 <div><label class="field" for="age">Thời gian quan sát lần đầu</label><select id="age"><option value="0">Tất cả</option><option value="7">7 ngày gần nhất</option><option value="30">30 ngày gần nhất</option></select></div>
-<div class="actions"><button id="reset" class="secondary">Dữ liệu demo</button><button id="export">Xuất CSV</button></div>
+<div class="actions"><button id="export">Xuất CSV</button></div>
 </section>
 <div id="dataStatus" aria-live="polite"></div>
 <section class="stats"><div class="card"><div class="muted">JD quan sát</div><div class="metric" id="jobs">0</div></div><div class="card"><div class="muted">Doanh nghiệp</div><div class="metric" id="companies">0</div></div><div class="card"><div class="muted">Nguồn dữ liệu</div><div class="metric" id="sources">0</div></div><div class="card"><div class="muted">Automation + SDET</div><div class="metric" id="auto">0%</div></div></section>
 <section class="card section" style="margin-top:0;margin-bottom:20px"><h2>Phân bổ khu vực</h2><div id="regions"></div><p class="muted">Các tin tuyển dụng tại Đông Nam Á không nhất thiết chấp nhận ứng viên tại Việt Nam. Remote chưa chắc cho phép làm việc từ Việt Nam.</p></section>
-<section class="panels"><div class="card"><h2>Phân bổ vai trò</h2><div id="roles"></div></div><div class="card"><h2>Kỹ năng xuất hiện trong JD</h2><div id="skills"></div></div></section>
+<section class="panels"><div class="card"><h2>Phân bổ vai trò</h2><p class="muted">Bấm vào một vai trò để lọc JD; bấm lại để bỏ chọn.</p><div id="roles"></div></div><div class="card"><h2>Kỹ năng xuất hiện trong JD</h2><p class="muted">Bấm vào một kỹ năng để lọc JD; có thể kết hợp với vai trò.</p><div id="skills"></div></div></section>
+<div class="chart-filter-status" id="chartFilterStatus" aria-live="polite" hidden><span id="activeChartFilters"></span><button id="clearChartFilters" class="secondary" type="button">Xóa lọc vai trò / kỹ năng</button></div>
 <section class="card section jd-explorer"><h2>JD Explorer</h2><div class="scroll"><table><thead><tr><th>Chức danh</th><th>Công ty</th><th>Địa điểm</th><th>Vai trò</th><th>Kinh nghiệm / Level</th><th>Mức lương</th><th title="Ngày đăng tương đối giữ nguyên theo nội dung và mốc ngày của Google Sheet">Ngày đăng</th><th>Hạn ứng tuyển</th><th>Kỹ năng</th><th>Nguồn</th><th>Link JD</th></tr></thead><tbody id="records"></tbody></table></div></section>
 <footer>Chỉ số phản ánh bản ghi trong dữ liệu đã nhập. Chưa gộp trùng giữa các nguồn và chưa suy ra nhu cầu tuyển dụng toàn thị trường.<br>CSV được xử lý trên thiết bị của bạn; làm mới trang sẽ xóa dữ liệu đã nhập.</footer>
 </main>
@@ -41,12 +42,58 @@ const skills={"Playwright":/\bplaywright\b/i,"Selenium":/\bselenium\b/i,"Cypress
 function classify(title){if(/\bsdet\b|software development engineer in test/i.test(title))return"SDET";if(/\b(?:qa|test|quality)\s*(?:lead|manager)\b|\bhead of qa\b/i.test(title))return"QA Lead";if(/\b(?:automation|automated|test automation)\b/i.test(title))return"Automation QA";if(/\b(?:qa|tester|testing|quality assurance|test engineer)\b/i.test(title))return"Manual QA";return"Other"}
 function enrich(j){const t=(j.title||"")+" "+(j.description||"");return {...j,role:classify(j.title||""),skills:Object.entries(skills).filter(([_,rx])=>rx.test(t)).map(([s])=>s)}}
 let all=demo.map(j=>({...enrich(j),market_region:marketRegion(j.location)})),isDemo=true;
+let selectedSkill="";
 const $=s=>document.querySelector(s);
 function csvParse(text){const rows=[];let row=[],cell="",quoted=false;for(let i=0;i<text.length;i++){const c=text[i];if(quoted){if(c==='"'&&text[i+1]==='"'){cell+='"';i++}else if(c==='"')quoted=false;else cell+=c}else if(c==='"')quoted=true;else if(c===','){row.push(cell);cell=""}else if(c==='\n'||c==='\r'){if(c==='\r'&&text[i+1]==='\n')i++;row.push(cell);if(row.some(x=>x!==""))rows.push(row);row=[];cell=""}else cell+=c}row.push(cell);if(row.some(x=>x!==""))rows.push(row);if(quoted)throw Error("CSV có dấu ngoặc kép chưa đóng");return rows}
 function marketRegion(loc){const p=String(loc||"").toLowerCase();if(/\b(?:viet\s?nam|ha\s?noi|hanoi|ho chi minh|hcmc|saigon|sai gon|da nang|danang)\b/.test(p))return"Vietnam";if(/\b(?:south\s?east asia|southeast asia|asean)\b/.test(p))return"Southeast Asia";if(/\b(?:any location|anywhere|worldwide|global|remote)\b/.test(p))return"Remote / unspecified";return"Other / unspecified"}
-function selectedJobs(){const r=$("#role").value,l=$("#location").value,region=$("#region").value,age=Number($("#age").value);const cutoff=Date.now()-age*86400000;return all.filter(j=>(!r||j.role===r)&&(!l||j.location===l)&&(!region||j.market_region===region)&&(!age||(j.first_seen&&Number.isFinite(Date.parse(j.first_seen))&&Date.parse(j.first_seen)>=cutoff)))}
+function selectedJobs({ignoreRole=false,ignoreSkill=false}={}){const r=$("#role").value,l=$("#location").value,region=$("#region").value,age=Number($("#age").value);const cutoff=Date.now()-age*86400000;return all.filter(j=>(ignoreRole||!r||j.role===r)&&(ignoreSkill||!selectedSkill||(Array.isArray(j.skills)&&j.skills.includes(selectedSkill)))&&(!l||j.location===l)&&(!region||j.market_region===region)&&(!age||(j.first_seen&&Number.isFinite(Date.parse(j.first_seen))&&Date.parse(j.first_seen)>=cutoff)))}
 function populate(){for(const [id,key] of [["#role","role"],["#location","location"]]){const sel=$(id);sel.replaceChildren(new Option(id==="#role"?"Tất cả vai trò":"Tất cả địa điểm",""));[...new Set(all.map(x=>x[key]).filter(Boolean))].sort().forEach(v=>sel.add(new Option(v,v)))}}
-function barChart(target,arr){const el=$(target);el.replaceChildren();if(!arr.length){el.textContent="Chưa có dữ liệu";return}const max=Math.max(...arr.map(x=>x[1]),1);arr.slice(0,15).forEach(([name,count])=>{const r=document.createElement("div");r.className="bar-row";const h=document.createElement("div");h.className="bar-head";const a=document.createElement("span");a.textContent=name;const b=document.createElement("strong");b.textContent=count;h.append(a,b);const track=document.createElement("div");track.className="track";const bar=document.createElement("div");bar.className="bar";bar.style.width=(count/max*100)+"%";track.append(bar);r.append(h,track);el.append(r)})}
+function barChart(target,arr,{selected="",onSelect=null}={}){
+ const el=$(target);el.replaceChildren();
+ if(!arr.length){el.textContent="Chưa có dữ liệu";return}
+ const max=Math.max(...arr.map(x=>x[1]),1);
+ let visible=arr.slice(0,15);
+ if(selected&&!visible.some(([name])=>name===selected)){
+   const active=arr.find(([name])=>name===selected);
+   if(active)visible=[...visible.slice(0,14),active];
+ }
+ visible.forEach(([name,count])=>{
+   const row=document.createElement("div");row.className="bar-row";
+   const content=document.createElement(onSelect?"button":"div");
+   if(onSelect){
+     content.type="button";
+     content.className="bar-choice";
+     content.dataset.filterValue=name;
+     content.setAttribute("aria-label","Lọc JD theo "+(target==="#roles"?"vai trò ":"kỹ năng ")+name+" ("+count+" JD)");
+     content.setAttribute("aria-pressed",String(name===selected));
+     content.addEventListener("click",()=>onSelect(name));
+   }
+   const head=document.createElement("div");head.className="bar-head";
+   const label=document.createElement("span");label.textContent=name;
+   const total=document.createElement("strong");total.textContent=count;
+   head.append(label,total);
+   const track=document.createElement("div");track.className="track";
+   const bar=document.createElement("div");bar.className="bar";
+   bar.style.width=(count/max*100)+"%";track.append(bar);
+   content.append(head,track);row.append(content);el.append(row);
+ });
+}
+function focusChartChoice(target,name){
+ const choice=Array.from(document.querySelectorAll(target+" .bar-choice"))
+   .find(button=>button.dataset.filterValue===name);
+ if(choice)choice.focus();
+}
+function toggleRole(name){
+ const dropdown=$("#role");
+ dropdown.value=dropdown.value===name?"":name;
+ render();
+ focusChartChoice("#roles",name);
+}
+function toggleSkill(name){
+ selectedSkill=selectedSkill===name?"":name;
+ render();
+ focusChartChoice("#skills",name);
+}
 function counts(a){const m=new Map;for(const v of a)m.set(v,(m.get(v)||0)+1);return [...m].sort((x,y)=>y[1]-x[1])}
 function formatDate(input){
  if(!input)return"Không công bố";
@@ -85,10 +132,16 @@ function formatSalary(s){
  const range=low!==null&&high!==null?n(low)+"–"+n(high):low!==null?"Từ "+n(low):"Đến "+n(high);
  return range+" "+currency+"/"+period;
 }
-function render(){const data=selectedJobs();$("#jobs").textContent=data.length;$("#companies").textContent=new Set(data.map(j=>j.company)).size;$("#sources").textContent=new Set(data.map(j=>j.source)).size;$("#auto").textContent=(data.length?Math.round(data.filter(j=>["SDET","Automation QA"].includes(j.role)).length/data.length*100):0)+"%";barChart("#regions",counts(data.map(j=>j.market_region)));barChart("#roles",counts(data.map(j=>j.role)));barChart("#skills",counts(data.flatMap(j=>j.skills)));const body=$("#records");body.replaceChildren();data.slice(0,500).forEach(j=>{const tr=document.createElement("tr");for(const v of [j.title,j.company,j.location,j.role,(j.experience_text||(j.ingested_from==="google_sheet"?"Chưa có trong Sheet":"Không công bố")),(j.salary_text||formatSalary(j.salary)),formatPosted(j),formatDate(j.application_deadline),j.skills.join(", ")]){const td=document.createElement("td");td.textContent=v||"—";tr.append(td)}const sourceTd=document.createElement("td");if(/^https:\/\//i.test(j.url||"")){const sourceLink=document.createElement("a");sourceLink.href=j.url;sourceLink.target="_blank";sourceLink.rel="noopener noreferrer";sourceLink.className="source-link";sourceLink.title="Mở tin tuyển dụng gốc";sourceLink.textContent=j.source||"Mở nguồn";sourceTd.append(sourceLink)}else sourceTd.textContent=j.source||"—";tr.append(sourceTd);const linkTd=document.createElement("td");if(/^https:\/\//i.test(j.url||"")){const link=document.createElement("a");link.href=j.url;link.target="_blank";link.rel="noopener noreferrer";link.textContent="Mở JD";linkTd.append(link)}else linkTd.textContent="—";tr.append(linkTd);body.append(tr)});$("#dataStatus").textContent=isDemo?"Đang dùng 3 bản ghi ví dụ (DEMO).":"Đang dùng "+all.length+" bản ghi từ CSV tải lên cục bộ."}
-$("#role").addEventListener("change",render);$("#location").addEventListener("change",render);$("#region").addEventListener("change",render);$("#age").addEventListener("change",render);
-$("#reset").onclick=()=>{all=demo.map(j=>({...enrich(j),market_region:marketRegion(j.location)}));isDemo=true;$("#csv").value="";$("#region").value="";$("#age").value="0";$("#notice").style.display="block";populate();render()};
-$("#csv").onchange=async e=>{const f=e.target.files[0];if(!f)return;try{if(f.size>5e6)throw Error("Tệp CSV quá lớn (tối đa 5 MB)");const rows=csvParse((await f.text()).replace(/^\uFEFF/,""));if(rows.length<2)throw Error("CSV không có dòng dữ liệu");const head=rows.shift().map(h=>h.trim().toLowerCase());if(!head.includes("title"))throw Error("CSV thiếu cột title");const items=rows.map((vals,i)=>{const obj={};head.forEach((k,j)=>obj[k]=vals[j]||"");obj.source||="csv";obj.source_id||=String(i+1);obj.company||="Unknown";return obj}).filter(x=>x.title.trim()).map(enrich);if(!items.length)throw Error("Không có JD hợp lệ");all=items.map(j=>({...j,market_region:marketRegion(j.location),salary:parseSalaryCsv(j)}));isDemo=false;$("#notice").style.display="none";populate();render()}catch(err){alert("Không thể đọc CSV: "+err.message);e.target.value=""}};
+function render(){const data=selectedJobs();$("#jobs").textContent=data.length;$("#companies").textContent=new Set(data.map(j=>j.company)).size;$("#sources").textContent=new Set(data.map(j=>j.source)).size;$("#auto").textContent=(data.length?Math.round(data.filter(j=>["SDET","Automation QA"].includes(j.role)).length/data.length*100):0)+"%";barChart("#regions",counts(data.map(j=>j.market_region)));
+barChart("#roles",counts(selectedJobs({ignoreRole:true}).map(j=>j.role)),{selected:$("#role").value,onSelect:toggleRole});
+barChart("#skills",counts(selectedJobs({ignoreSkill:true}).flatMap(j=>j.skills)),{selected:selectedSkill,onSelect:toggleSkill});
+const activeFilters=[($("#role").value?"Vai trò: "+$("#role").value:""),(selectedSkill?"Kỹ năng: "+selectedSkill:"")].filter(Boolean);
+$("#chartFilterStatus").hidden=!activeFilters.length;
+$("#activeChartFilters").textContent=activeFilters.length?"Đang lọc · "+activeFilters.join(" · "):"";const body=$("#records");body.replaceChildren();if(!data.length){const row=document.createElement("tr");const cell=document.createElement("td");cell.colSpan=11;cell.textContent="Không có JD phù hợp với bộ lọc. Hãy chọn kỹ năng/vai trò khác hoặc xóa lọc.";row.append(cell);body.append(row)}data.slice(0,500).forEach(j=>{const tr=document.createElement("tr");for(const v of [j.title,j.company,j.location,j.role,(j.experience_text||(j.ingested_from==="google_sheet"?"Chưa có trong Sheet":"Không công bố")),(j.salary_text||formatSalary(j.salary)),formatPosted(j),formatDate(j.application_deadline),j.skills.join(", ")]){const td=document.createElement("td");td.textContent=v||"—";tr.append(td)}const sourceTd=document.createElement("td");if(/^https:\/\//i.test(j.url||"")){const sourceLink=document.createElement("a");sourceLink.href=j.url;sourceLink.target="_blank";sourceLink.rel="noopener noreferrer";sourceLink.className="source-link";sourceLink.title="Mở tin tuyển dụng gốc";sourceLink.textContent=j.source||"Mở nguồn";sourceTd.append(sourceLink)}else sourceTd.textContent=j.source||"—";tr.append(sourceTd);const linkTd=document.createElement("td");if(/^https:\/\//i.test(j.url||"")){const link=document.createElement("a");link.href=j.url;link.target="_blank";link.rel="noopener noreferrer";link.textContent="Mở JD";linkTd.append(link)}else linkTd.textContent="—";tr.append(linkTd);body.append(tr)});$("#dataStatus").textContent=isDemo?"Đang dùng 3 bản ghi ví dụ (DEMO).":"Đang dùng "+all.length+" bản ghi từ CSV tải lên cục bộ."}
+$("#role").addEventListener("change",render);
+$("#clearChartFilters").addEventListener("click",()=>{selectedSkill="";$("#role").value="";render();$("#clearChartFilters").blur()});$("#location").addEventListener("change",render);$("#region").addEventListener("change",render);$("#age").addEventListener("change",render);
+
+$("#csv").onchange=async e=>{const f=e.target.files[0];if(!f)return;try{if(f.size>5e6)throw Error("Tệp CSV quá lớn (tối đa 5 MB)");const rows=csvParse((await f.text()).replace(/^\uFEFF/,""));if(rows.length<2)throw Error("CSV không có dòng dữ liệu");const head=rows.shift().map(h=>h.trim().toLowerCase());if(!head.includes("title"))throw Error("CSV thiếu cột title");const items=rows.map((vals,i)=>{const obj={};head.forEach((k,j)=>obj[k]=vals[j]||"");obj.source||="csv";obj.source_id||=String(i+1);obj.company||="Unknown";return obj}).filter(x=>x.title.trim()).map(enrich);if(!items.length)throw Error("Không có JD hợp lệ");selectedSkill="";all=items.map(j=>({...j,market_region:marketRegion(j.location),salary:parseSalaryCsv(j)}));isDemo=false;$("#notice").style.display="none";populate();render()}catch(err){alert("Không thể đọc CSV: "+err.message);e.target.value=""}};
 function escapeCsv(x){const s=String(x??"");return /[",\r\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s}
 $("#export").onclick=()=>{const data=selectedJobs();const keys=["source","source_id","company","title","location","description","url","role","experience_text","skills","posted_at","posted_text","application_deadline","salary","salary_text"];const text=[keys.join(","),...data.map(j=>keys.map(k=>escapeCsv(k==="skills"?j.skills.join("; "):k==="salary"?(j.salary_text||formatSalary(j.salary)):j[k])).join(","))].join("\r\n");const blob=new Blob(["\uFEFF"+text],{type:"text/csv;charset=utf-8"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="qa_jobs_filtered.csv";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};
 populate();render();
@@ -99,6 +152,7 @@ async function loadPublishedJobs(){
     const payload=await response.json();
     if(!Array.isArray(payload.jobs)||!payload.jobs.length) return;
     if($("#csv").files.length) return;
+    selectedSkill="";
     all=payload.jobs.map(j=>({
       source:String(j.source||""),
       source_id:String(j.source_id||""),
