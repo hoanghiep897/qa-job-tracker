@@ -52,5 +52,44 @@
     "board": "binance",
     "company": "Binance",
     "enabled": true
+  },
+  {
+    "provider": "itviec",
+    "board": "licensed-search",
+    "company": "ITviec",
+    "enabled": true,
+    "permission_confirmed": true,
+    "search_urls": [
+      "https://itviec.com/it-jobs?query=tester"
+    ],
+    "max_search_pages": 1,
+    "max_job_details": 10,
+    "delay_seconds": 2
+  },
+  {
+    "provider": "topcv",
+    "board": "licensed-search",
+    "company": "TopCV",
+    "enabled": true,
+    "permission_confirmed": true,
+    "search_urls": [
+      "https://www.topcv.vn/tim-viec-lam-tester"
+    ],
+    "max_search_pages": 1,
+    "max_job_details": 10,
+    "delay_seconds": 2
+  },
+  {
+    "provider": "vietnamworks",
+    "board": "licensed-search",
+    "company": "VietnamWorks",
+    "enabled": true,
+    "permission_confirmed": true,
+    "search_urls": [
+      "https://www.vietnamworks.com/viec-lam?q=tester"
+    ],
+    "max_search_pages": 1,
+    "max_job_details": 10,
+    "delay_seconds": 2
   }
 ]
