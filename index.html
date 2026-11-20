@@ -99,7 +99,7 @@ function experienceGroup(raw){
 }
 function skillLabelsFromSheet(job){
  const raw=String(job.skills_text||"").trim();
- const labels=raw?raw.split(/[,;\n]+/):(Array.isArray(job.skills)?job.skills:[]);
+ const labels=raw?raw.split(/[,;\n]+/):[]; // No extra skills inferred from title or legacy tags.
  const unique=new Map();
  for(const part of labels){
    const name=String(part||"").trim().replace(/\s+/g," ");
