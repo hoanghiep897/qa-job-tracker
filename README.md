@@ -25,6 +25,18 @@ To inspect history locally: `sqlite3 data/jobs.sqlite3 'SELECT id, reference_at,
 
 ---
 
+## Career & Skill Insights — frontend only
+
+The dashboard now helps compare explicit experience requirements for **3, 4, 5, and 6 years**, as well as other exact year values, `Trên 5 năm`, `Entry Level`, `Intermediate`, `Expert`, missing or unrecognized labels. These are **mutually separate buckets**: a range like `3-5 năm` and the phrase `Trên 5 năm` are never invented as a precise year.
+
+The **Yêu cầu kinh nghiệm** selector filters JD Explorer, bar charts, KPIs and downloaded CSV. The **So sánh kỹ năng theo kinh nghiệm** panel compares two independently selected cohorts (default 3 vs 5 years), using original comma-/semicolon-separated values from `Skill yêu cầu (cho CV)`, not inferred job-title tags. Counts are per distinct JD and percentages use *that cohort's* JD count as denominator. A difference in percentage points is descriptive only. For each cohort, the UI shows its JD sample count and warns when either group has fewer than five jobs. Comparisons respect the existing role, location, market and observation-age filters but ignore the JD Explorer's selected exact year and clicked skill to keep the two cohorts comparable.
+
+**My Skill Gap** lets visitors self-report known skills with checkboxes, selected from the most frequent 25 skill labels for their selected experience target. Skills not checked mean **not self-assessed**, not proven missing. Answers are stored only in browser `localStorage` for that site and are never sent to GitHub, Google Sheet or the SQLite database. The **30/60/90-day learning roadmap** chooses up to six frequently mentioned skills not self-marked as known and proposes small practice tasks, clearly labeled as *suggestions*, not job responsibilities extracted from the original postings. No new columns or additional Google Sheet scraping are required.
+
+The role bucket remains a title-based heuristic. It can misclassify some QA/Automation titles, so consider the sample and examine original JD links before drawing strong conclusions. These statistics describe only the owner-maintained Sheet's current snapshot, not the complete market.
+
+---
+
 ## Historical implementation notes (superseded for live pipeline)
 
 # QA Job Tracker
