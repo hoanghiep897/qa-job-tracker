@@ -221,7 +221,7 @@ function saveKnownSkills(){
  try{if(typeof localStorage!=="undefined")localStorage.setItem(KNOWN_SKILLS_KEY,JSON.stringify([...knownSkills]));}
  catch(e){console.warn("Cannot save local skill self-assessment:",e)}
 }
-function comparisonBaseJobs(){return selectedJobs({ignoreExperience:true,ignoreSkill:true})}
+function comparisonBaseJobs(){return all} // Comparison is independent of hidden Explore filters.
 function percent(count,total){return total?Math.round(count*1000/total)/10:0}
 function renderComparison(){
  const first=$("#compareA").value||"3",second=$("#compareB").value||"5";
@@ -333,6 +333,48 @@ function renderSkillGapAndRoadmap(){
 }
 function renderCareerInsights(){renderComparison();renderSkillGapAndRoadmap();}
 
+/* Welcome and task navigation: only one panel is visible at a time. */
+const VIEW_NAMES=["overview","explore","compare","roadmap"];
+let activeView="overview";
+function showView(name){
+ if(!VIEW_NAMES.includes(name))name="overview";
+ activeView=name;
+ for(const view of VIEW_NAMES){
+   const selected=view===name;
+   const panel=$("#view-"+view),tab=$("#tab-"+view);
+   panel.hidden=!selected;
+   tab.setAttribute("aria-selected",String(selected));
+   tab.tabIndex=selected?0:-1;
+ }
+}
+function renderWelcome(){
+ const year=$("#welcomeExperience").value||"5";
+ const sample=all.filter(job=>experienceGroup(job.experience_text)===year);
+ $("#welcomeJobs").textContent=sample.length;
+ const top=$("#welcomeSkills");top.replaceChildren();
+ for(const skill of skillFrequency(sample).slice(0,5)){
+   const el=document.createElement("span");
+   el.textContent=skill.name+" · "+skill.count+"/"+sample.length+" JD";
+   top.append(el);
+ }
+ if(!sample.length)top.textContent="Chưa có kỹ năng để thống kê trong nhóm này.";
+ $("#welcomeSampleNote").textContent=sample.length===0
+   ?"Chưa có JD trong Sheet cho mức "+(EXPERIENCE_LABELS[year]||year)+". Hãy chọn nhóm khác."
+   :sample.length<5?"Mẫu chỉ có "+sample.length+" JD, chưa đủ để kết luận xu hướng.":"Số liệu từ Google Sheet mới nhất; chỉ mang tính tham khảo.";
+}
+function openNextStep(name){
+ const year=$("#welcomeExperience").value||"5";
+ if(name==="explore")$("#experience").value=year;
+ if(name==="compare"){
+   $("#compareB").value=year;
+   $("#compareA").value=year==="3"?"5":"3";
+ }
+ if(name==="roadmap")$("#targetExperience").value=year;
+ render();
+ showView(name);
+}
+
+
 function selectedJobs({ignoreRole=false,ignoreSkill=false,ignoreExperience=false}={}){const r=$("#role").value,l=$("#location").value,region=$("#region").value,age=Number($("#age").value),experience=$("#experience").value;const cutoff=Date.now()-age*86400000;return all.filter(j=>(ignoreRole||!r||j.role===r)&&(ignoreSkill||!selectedSkill||(Array.isArray(j.skills)&&j.skills.includes(selectedSkill)))&&(ignoreExperience||!experience||experienceGroup(j.experience_text)===experience)&&(!l||j.location===l)&&(!region||j.market_region===region)&&(!age||(j.first_seen&&Number.isFinite(Date.parse(j.first_seen))&&Date.parse(j.first_seen)>=cutoff)))}
 function populate(){for(const [id,key] of [["#role","role"],["#location","location"]]){const sel=$(id);sel.replaceChildren(new Option(id==="#role"?"Tất cả vai trò":"Tất cả địa điểm",""));[...new Set(all.map(x=>x[key]).filter(Boolean))].sort().forEach(v=>sel.add(new Option(v,v)))}}
 function barChart(target,arr,{selected="",onSelect=null}={}){
@@ -416,10 +458,14 @@ function formatSalary(s){
 function render(){const data=selectedJobs();$("#jobs").textContent=data.length;$("#companies").textContent=new Set(data.map(j=>j.company)).size;$("#sources").textContent=new Set(data.map(j=>j.source)).size;$("#auto").textContent=(data.length?Math.round(data.filter(j=>["SDET","Automation QA"].includes(j.role)).length/data.length*100):0)+"%";barChart("#regions",counts(data.map(j=>j.market_region)));
 barChart("#roles",counts(selectedJobs({ignoreRole:true}).map(j=>j.role)),{selected:$("#role").value,onSelect:toggleRole});
 barChart("#skills",counts(selectedJobs({ignoreSkill:true}).flatMap(j=>j.skills)),{selected:selectedSkill,onSelect:toggleSkill});
-renderCareerInsights();
+renderCareerInsights();renderWelcome();
 const activeFilters=[($("#role").value?"Vai trò: "+$("#role").value:""),(selectedSkill?"Kỹ năng: "+selectedSkill:"")].filter(Boolean);
 $("#chartFilterStatus").hidden=!activeFilters.length;
 $("#activeChartFilters").textContent=activeFilters.length?"Đang lọc · "+activeFilters.join(" · "):"";const body=$("#records");body.replaceChildren();if(!data.length){const row=document.createElement("tr");const cell=document.createElement("td");cell.colSpan=10;cell.textContent="Không có JD phù hợp với bộ lọc. Hãy chọn kỹ năng/vai trò khác hoặc xóa lọc.";row.append(cell);body.append(row)}data.slice(0,500).forEach(j=>{const tr=document.createElement("tr");for(const v of [j.title,j.company,j.location,j.role,(j.experience_text||(j.ingested_from==="google_sheet"?"Chưa có trong Sheet":"Không công bố")),(j.salary_text||formatSalary(j.salary)),formatPosted(j),(j.skills_text||j.skills.join(", "))]){const td=document.createElement("td");td.textContent=v||"—";tr.append(td)}const sourceTd=document.createElement("td");if(/^https:\/\//i.test(j.url||"")){const sourceLink=document.createElement("a");sourceLink.href=j.url;sourceLink.target="_blank";sourceLink.rel="noopener noreferrer";sourceLink.className="source-link";sourceLink.title="Mở tin tuyển dụng gốc";sourceLink.textContent=j.source||"Mở nguồn";sourceTd.append(sourceLink)}else sourceTd.textContent=j.source||"—";tr.append(sourceTd);const linkTd=document.createElement("td");if(/^https:\/\//i.test(j.url||"")){const link=document.createElement("a");link.href=j.url;link.target="_blank";link.rel="noopener noreferrer";link.textContent="Mở JD";linkTd.append(link)}else linkTd.textContent="—";tr.append(linkTd);body.append(tr)});$("#dataStatus").textContent="Đang hiển thị "+data.length+" / "+all.length+" JD từ Google Sheet";}
+document.querySelectorAll(".view-tab").forEach(tab=>tab.addEventListener("click",()=>showView(tab.id.slice(4))));
+document.querySelectorAll("[data-start]").forEach(button=>button.addEventListener("click",()=>openNextStep(button.dataset.start)));
+$("#welcomeExperience").addEventListener("change",renderWelcome);
+showView("overview");
 $("#role").addEventListener("change",render);
 $("#experience").addEventListener("change",render);
 $("#compareA").addEventListener("change",renderCareerInsights);
