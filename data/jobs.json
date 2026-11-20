@@ -1,10 +1,10 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-20T00:41:45+00:00",
+  "updated_at": "2026-11-20T00:43:04+00:00",
   "scope": "User-maintained Google Sheet only. Current spreadsheet snapshot.",
   "source_mode": "google_sheet_only",
   "database": "SQLite",
-  "snapshot_id": 2,
+  "snapshot_id": 3,
   "capture_reference_at": "2026-11-20T06:00:00+07:00",
   "sources_succeeded": [
     "google_sheet"
@@ -44,7 +44,7 @@
       "title": "Security Engineer - Red Team",
       "url": "https://www.topcv.vn/viec-lam/security-engineer-red-team/1763909.html",
       "first_seen": "2026-11-20T00:41:45+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -77,7 +77,7 @@
       "title": "Kiểm Thử Phần Mềm (Web/Mobile/API) - Từ 02 Năm Kinh Nghiệm",
       "url": "https://www.topcv.vn/viec-lam/kiem-thu-phan-mem-web-mobile-api-tu-02-nam-kinh-nghiem/2355695.html",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -105,7 +105,7 @@
       "title": "Senior Quality Control ( Game Industry )",
       "url": "https://www.topcv.vn/viec-lam/senior-quality-control-game-industry/2352955.html",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -131,7 +131,7 @@
       "title": "Equipment Interface Test Engineer (C#)",
       "url": "https://www.topcv.vn/viec-lam/equipment-interface-test-engineer-c/2356968.html",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -164,7 +164,7 @@
       "title": "Junior QA Engineer",
       "url": "https://www.topcv.vn/viec-lam/junior-qa-engineer/2360452.html",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -195,7 +195,7 @@
       "title": "Tester (Manual/Automation) – Thu Nhập 18-24 Triệu | Thưởng Hè, Tết | Review Lương 2 Lần/Năm, Nghỉ T7 Và CN",
       "url": "https://www.topcv.vn/viec-lam/tester-manual-automation-thu-nhap-18-24-trieu-thuong-he-tet-review-luong-2-lan-nam-nghi-t7-va-cn/2169805.html",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -226,7 +226,7 @@
       "title": "Senior Tester (QC Leader / Tester Leader)",
       "url": "https://www.topcv.vn/viec-lam/senior-tester-qc-leader-tester-leader/2336602.html",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -257,7 +257,7 @@
       "title": "Chuyên Viên Kiểm Thử Phần Mềm",
       "url": "https://www.topcv.vn/viec-lam/chuyen-vien-kiem-thu-phan-mem/2346041.html",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -289,7 +289,7 @@
       "title": "Senior QA/QC Engineer",
       "url": "https://www.topcv.vn/viec-lam/senior-qa-qc-engineer/2348549.html",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -318,7 +318,7 @@
       "title": "Kiểm Thử Phần Mềm - Tester (Senior Quality Control)",
       "url": "https://www.topcv.vn/viec-lam/kiem-thu-phan-mem-tester-senior-quality-control/2356950.html",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -346,7 +346,7 @@
       "title": "Nhân Viên Kiểm Thử Phần Mềm - Từ 2 Năm Kinh Nghiệm",
       "url": "https://www.topcv.vn/viec-lam/nhan-vien-kiem-thu-phan-mem-tu-2-nam-kinh-nghiem/2361976.html",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -375,7 +375,7 @@
       "title": "Automation QA Engineer",
       "url": "https://www.topcv.vn/viec-lam/automation-qa-engineer/2359852.html",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -405,7 +405,7 @@
       "title": "Senior QA Engineer (Japanese-Speaking)",
       "url": "https://www.topcv.vn/viec-lam/senior-qa-engineer-japanese-speaking/2361397.html",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -434,7 +434,7 @@
       "title": "Chuyên Viên Tester Từ 2 Năm Kinh Nghiệm",
       "url": "https://www.topcv.vn/viec-lam/chuyen-vien-tester-tu-2-nam-kinh-nghiem/2361828.html",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -466,7 +466,7 @@
       "title": "Automation Tester (Software Testing)",
       "url": "https://www.topcv.vn/viec-lam/automation-tester-software-testing/2357365.html",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -492,7 +492,7 @@
       "title": "Nhân Viên Tester",
       "url": "https://www.topcv.vn/viec-lam/nhan-vien-tester/1343524.html",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -520,7 +520,7 @@
       "title": "Thực Tập Sinh Tester QA/QC (Manual Test)",
       "url": "https://www.topcv.vn/viec-lam/thuc-tap-sinh-tester-qa-qc-manual-test/2357050.html",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -546,7 +546,7 @@
       "title": "Tester Intern",
       "url": "https://www.topcv.vn/viec-lam/tester-intern/1706623.html",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -576,7 +576,7 @@
       "title": "Software Tester",
       "url": "https://www.topcv.vn/viec-lam/software-tester/2354467.html",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -605,7 +605,7 @@
       "title": "Thực Tập Sinh Kiểm Thử Phần Mềm (Tester / QA Intern)",
       "url": "https://www.topcv.vn/brand/ahv/tuyen-dung/thuc-tap-sinh-kiem-thu-phan-mem-tester-qa-intern-j2321780.html",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -631,7 +631,7 @@
       "title": "Thực Tập Sinh QC (Travel Tech)",
       "url": "https://www.topcv.vn/viec-lam/thuc-tap-sinh-qc-travel-tech/2064323.html",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -667,7 +667,7 @@
       "title": "Automation Test Engineer – Data & AI Products",
       "url": "https://www.topcv.vn/viec-lam/automation-test-engineer-data-ai-products/2353159.html",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -695,7 +695,7 @@
       "title": "Software Tester",
       "url": "https://www.topcv.vn/viec-lam/software-tester/2360407.html",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -723,7 +723,7 @@
       "title": "Chuyên Viên Kiểm Thử Phần Mềm /Tester - Đi Làm Ngay - Thu Nhập Từ 18 -32 Triệu / Tháng",
       "url": "https://www.topcv.vn/viec-lam/chuyen-vien-kiem-thu-phan-mem-tester-di-lam-ngay-thu-nhap-tu-18-32-trieu-thang/2287208.html",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -749,7 +749,7 @@
       "title": "Manual Tester (Doamain Bank/ Fintech)",
       "url": "https://www.topcv.vn/viec-lam/manual-tester-doamain-bank-fintech/2361114.html",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -779,7 +779,7 @@
       "title": "Chuyên Viên Kiểm Thử Xâm Nhập - Pentester",
       "url": "https://www.topcv.vn/viec-lam/chuyen-vien-kiem-thu-xam-nhap-pentester/2351073.html",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -805,7 +805,7 @@
       "title": "Software Tester",
       "url": "https://www.topcv.vn/viec-lam/software-tester/2350263.html",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -839,7 +839,7 @@
       "title": "Manual Tester (Senior/Lead) - TA180",
       "url": "https://www.topcv.vn/viec-lam/manual-tester-senior-lead-ta180/2361870.html",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -868,7 +868,7 @@
       "title": "Tester/QA Data (SenLead)",
       "url": "https://www.topcv.vn/viec-lam/tester-qa-data-senlead/2361758.html",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -899,7 +899,7 @@
       "title": "Tester Lead",
       "url": "https://www.topcv.vn/viec-lam/tester-lead/2360295.html",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -925,7 +925,7 @@
       "title": "QC Lead",
       "url": "https://www.topcv.vn/viec-lam/qc-lead/2359620.html",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -951,7 +951,7 @@
       "title": "QC Auto Test",
       "url": "https://www.topcv.vn/viec-lam/qc-auto-test/2298969.html",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -977,7 +977,7 @@
       "title": "Software Tester (Automation & Manual)",
       "url": "https://www.topcv.vn/viec-lam/software-tester-automation-manual/2256012.html",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -1007,7 +1007,7 @@
       "title": "Trưởng Nhóm Kiểm Thử",
       "url": "https://www.topcv.vn/viec-lam/truong-nhom-kiem-thu/2358574.html",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -1035,7 +1035,7 @@
       "title": "Tester (Lead Staffing - 2 Years)",
       "url": "https://www.topcv.vn/viec-lam/tester-lead-staffing-2-years/2358855.html",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -1065,7 +1065,7 @@
       "title": "Pentest Engineer (Lead)",
       "url": "https://www.topcv.vn/viec-lam/pentest-engineer-lead/2358040.html",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -1095,7 +1095,7 @@
       "title": "Tester/QA",
       "url": "https://www.topcv.vn/viec-lam/tester-qa/2326532.html",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -1121,7 +1121,7 @@
       "title": "Trưởng Nhóm Kiểm Thử Phần Mềm (Tester)",
       "url": "https://www.topcv.vn/viec-lam/truong-nhom-kiem-thu-phan-mem-tester/2244070.html",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -1151,7 +1151,7 @@
       "title": "Trưởng Nhóm Tester",
       "url": "https://www.topcv.vn/viec-lam/truong-nhom-tester/1973023.html",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -1180,7 +1180,7 @@
       "title": "Manual Tester Leader (Banking)",
       "url": "https://www.topcv.vn/viec-lam/manual-tester-leader-banking/2120897.html",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -1210,7 +1210,7 @@
       "title": "Manual Tester (Lead)",
       "url": "https://www.topcv.vn/viec-lam/manual-tester-lead/2350159.html",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -1238,7 +1238,7 @@
       "title": "Chuyên Gia Kiểm Thử Giải Pháp/ Solution Testing Specialist - Hà Nội - TA150",
       "url": "https://www.topcv.vn/viec-lam/chuyen-gia-kiem-thu-giai-phap-solution-testing-specialist-ha-noi-ta150/2351450.html",
       "first_seen": "2026-11-20T00:41:45+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -1264,7 +1264,7 @@
       "title": "Trưởng Nhóm Manual Tester",
       "url": "https://www.topcv.vn/viec-lam/truong-nhom-manual-tester/2254737.html",
       "first_seen": "2026-11-20T00:41:45+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -1290,7 +1290,7 @@
       "title": "Manual Tester (QA/QC, Good English)",
       "url": "https://itviec.com/it-jobs/manual-tester-qa-qc-good-english-netcompany-1818",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -1316,7 +1316,7 @@
       "title": "Software Tester",
       "url": "https://itviec.com/it-jobs/software-tester-savills-vietnam-0126",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -1344,7 +1344,7 @@
       "title": "Chuyên viên Kiểm thử - Tester -Khối Công nghệ thông tin",
       "url": "https://itviec.com/it-jobs/chuyen-vien-kiem-thu-tester-khoi-cong-nghe-thong-tin-mb-bank-1346",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -1376,7 +1376,7 @@
       "title": "02 Mid-Senior QC / Tester (QA QC, Automation Test)",
       "url": "https://itviec.com/it-jobs/02-mid-senior-qc-tester-qa-qc-automation-test-rontech-5707",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -1405,7 +1405,7 @@
       "title": "Japanese Tester (QA/QC)",
       "url": "https://itviec.com/it-jobs/japanese-tester-qa-qc-kobo-asia-5926",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -1434,7 +1434,7 @@
       "title": "Manual QA Engineer (Windows, Software Tester/QA QC)",
       "url": "https://itviec.com/it-jobs/manual-qa-engineer-windows-software-tester-qa-qc-yoong-5610",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -1460,7 +1460,7 @@
       "title": "Nhân viên Kiểm thử phần mềm (Tester)",
       "url": "https://itviec.com/it-jobs/nhan-vien-kiem-thu-phan-mem-tester-thai-son-soft-5308",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -1492,7 +1492,7 @@
       "title": "CV/CVCC Quality Control (Manual/Automation Tester)",
       "url": "https://itviec.com/it-jobs/cv-cvcc-quality-control-manual-automation-tester-hd-securities-corporation-3822",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -1520,7 +1520,7 @@
       "title": "Quality Control Intern (Software Tester)",
       "url": "https://itviec.com/it-jobs/quality-control-intern-software-tester-phu-hung-securities-phs-5721",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -1546,7 +1546,7 @@
       "title": "SENIOR TESTER (QC Lead)",
       "url": "https://itviec.com/it-jobs/senior-tester-qc-lead-sstech-5419",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -1572,7 +1572,7 @@
       "title": "Senior Tester (QA QC, Manual Tester) - SBSI - 4G060",
       "url": "https://itviec.com/it-jobs/senior-tester-qa-qc-manual-tester-sbsi-4g060-msb-1305",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -1603,7 +1603,7 @@
       "title": "Senior QA Engineer (Tester/ QA QC)",
       "url": "https://itviec.com/it-jobs/senior-qa-engineer-tester-qa-qc-ol-vietnam-4058",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -1631,7 +1631,7 @@
       "title": "Tester Intern",
       "url": "https://itviec.com/it-jobs/tester-intern-fpt-is-2357",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -1661,7 +1661,7 @@
       "title": "Quality engineer/Tester (Manual + auto)- Upto 28M net",
       "url": "https://itviec.com/it-jobs/quality-engineer-tester-manual-auto-upto-28m-net-opencommerce-group-2243",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -1689,7 +1689,7 @@
       "title": "Quality Engineer (QA QC, Tester)",
       "url": "https://itviec.com/it-jobs/quality-engineer-qa-qc-tester-deliveree-on-demand-logistics-0954",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -1721,7 +1721,7 @@
       "title": "Quality Control Engineer (Manual & Automation Tester)",
       "url": "https://itviec.com/it-jobs/quality-control-engineer-manual-automation-tester-restaff-house-of-norway-4945",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -1756,7 +1756,7 @@
       "title": "Fresher/Junior/Senior Full-stack Tester (Auto & Manual)",
       "url": "https://itviec.com/it-jobs/fresher-junior-senior-full-stack-tester-auto-manual-kms-technology-3223",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -1784,7 +1784,7 @@
       "title": "Lead Penetration Tester (Pentester)",
       "url": "https://itviec.com/it-jobs/lead-penetration-tester-pentester-itviec-recruitment-consulting-2038",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -1814,7 +1814,7 @@
       "title": "Giám Sát Chất Lượng (QC/QA/TESTER)",
       "url": "https://itviec.com/it-jobs/giam-sat-chat-luong-qc-qa-tester-alttekglobal-atg-corporation-3918",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -1845,7 +1845,7 @@
       "title": "Quality Control Specialist (QC/Tester, Jira, Postman)",
       "url": "https://itviec.com/it-jobs/quality-control-specialist-qc-tester-jira-postman-cong-ty-co-phan-vang-bac-da-quy-bao-tin-manh-hai-1333",
       "first_seen": "2026-11-19T13:53:06+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -1871,7 +1871,7 @@
       "title": "Product Research Testers — Sign-Up & KYC Flow Review",
       "url": "https://www.upwork.com/jobs/~022123530775081015966",
       "first_seen": "2026-11-20T00:41:45+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -1897,7 +1897,7 @@
       "title": "20 Gameplay Testers Needed for a Confidential PC Game Playtest",
       "url": "https://www.upwork.com/jobs/~022123489082627521546",
       "first_seen": "2026-11-20T00:41:45+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -1923,7 +1923,7 @@
       "title": "Testing Adoptions.com all over",
       "url": "https://www.upwork.com/jobs/~022123452238985952354",
       "first_seen": "2026-11-20T00:41:45+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -1949,7 +1949,7 @@
       "title": "Website Functionality Tester – Brazil",
       "url": "https://www.upwork.com/jobs/~022123394688227736674",
       "first_seen": "2026-11-20T00:41:45+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -1975,7 +1975,7 @@
       "title": "Test a game and provide Feedback (Android, US Only)",
       "url": "https://www.upwork.com/jobs/~022123434034986475974",
       "first_seen": "2026-11-20T00:41:45+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -2001,7 +2001,7 @@
       "title": "Game Tester: Check 818 HTML5 Games, Fix Broken Ones & Thumbnails",
       "url": "https://www.upwork.com/jobs/~022123387905115037909",
       "first_seen": "2026-11-20T00:41:45+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -2027,7 +2027,7 @@
       "title": "Automation Testing Expert / Agency – Enterprise Applications",
       "url": "https://www.upwork.com/jobs/~022123423716376191189",
       "first_seen": "2026-11-20T00:41:45+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -2053,7 +2053,7 @@
       "title": "QA Testers Wanted to Jump on an AI Assistant project!",
       "url": "https://www.upwork.com/jobs/~022123414655253574639",
       "first_seen": "2026-11-20T00:41:45+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     },
     {
       "application_deadline": null,
@@ -2079,7 +2079,7 @@
       "title": "QA tester wanted to run a trial of our new testing platform and share feedback",
       "url": "https://www.upwork.com/jobs/~022123411101923025109",
       "first_seen": "2026-11-20T00:41:45+00:00",
-      "last_seen": "2026-11-20T00:41:45+00:00"
+      "last_seen": "2026-11-20T00:43:04+00:00"
     }
   ]
 }
