@@ -84,7 +84,7 @@ class Element {
  focus(){this.focused=true}
  blur(){}
 }
-const nodes={};const el=id=>nodes[id]||(nodes[id]=new Element());
+const nodes={};const el=id=>nodes[id]||(nodes[id]=Object.assign(new Element(),{id:id.replace(/^#/,"")}));
 const tabs=["overview","explore","compare","roadmap"].map(id=>el("#tab-"+id));
 const starters=["explore","explore","compare","roadmap"].map(name=>{
  const button=new Element("button");button.dataset.start=name;return button;
