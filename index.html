@@ -83,7 +83,169 @@ let all=[];
 let selectedSkill="";
 const $=s=>document.querySelector(s);
 function marketRegion(loc){const p=String(loc||"").toLowerCase();if(/\b(?:viet\s?nam|ha\s?noi|hanoi|ho chi minh|hcmc|saigon|sai gon|da nang|danang)\b/.test(p))return"Vietnam";if(/\b(?:south\s?east asia|southeast asia|asean)\b/.test(p))return"Southeast Asia";if(/\b(?:any location|anywhere|worldwide|global|remote)\b/.test(p))return"Remote / unspecified";return"Other / unspecified"}
-function selectedJobs({ignoreRole=false,ignoreSkill=false}={}){const r=$("#role").value,l=$("#location").value,region=$("#region").value,age=Number($("#age").value);const cutoff=Date.now()-age*86400000;return all.filter(j=>(ignoreRole||!r||j.role===r)&&(ignoreSkill||!selectedSkill||(Array.isArray(j.skills)&&j.skills.includes(selectedSkill)))&&(!l||j.location===l)&&(!region||j.market_region===region)&&(!age||(j.first_seen&&Number.isFinite(Date.parse(j.first_seen))&&Date.parse(j.first_seen)>=cutoff)))}
+
+const EXPERIENCE_LABELS={"1":"1 năm","2":"2 năm","3":"3 năm","4":"4 năm","5":"5 năm","6":"6 năm","over5":"Trên 5 năm","entry":"Entry Level","intermediate":"Intermediate","expert":"Expert","none":"Không yêu cầu","unknown":"Không ghi","other":"Nhóm khác / khoảng năm"};
+function experienceGroup(raw){
+ const text=String(raw||"").trim().toLowerCase();
+ if(!text)return"unknown";
+ const exact=text.match(/^(\d+)\s*(?:năm|nam|years?|yrs?)$/i);
+ if(exact)return exact[1] in EXPERIENCE_LABELS?exact[1]:"other";
+ if(/^(?:trên|tren|over|above)\s*5\s*(?:năm|nam|years?|yrs?)$/i.test(text))return"over5";
+ if(text==="entry level")return"entry";
+ if(text==="intermediate")return"intermediate";
+ if(text==="expert")return"expert";
+ if(/^(?:không yêu cầu|khong yeu cau|no experience required|no experience)$/i.test(text))return"none";
+ return"other"; // Unknown numeric ranges stay separate, never assigned a specific year.
+}
+function skillLabelsFromSheet(job){
+ const raw=String(job.skills_text||"").trim();
+ const labels=raw?raw.split(/[,;\n]+/):(Array.isArray(job.skills)?job.skills:[]);
+ const unique=new Map();
+ for(const part of labels){
+   const name=String(part||"").trim().replace(/\s+/g," ");
+   if(name&&!unique.has(name.toLocaleLowerCase("vi-VN")))unique.set(name.toLocaleLowerCase("vi-VN"),name);
+ }
+ return [...unique.values()];
+}
+function skillFrequency(jobs){
+ const map=new Map();
+ for(const job of jobs){
+   const unique=new Set();
+   for(const label of Array.isArray(job.skills)?job.skills:[]){
+     const key=String(label||"").trim().toLocaleLowerCase("vi-VN");
+     if(!key||unique.has(key))continue;
+     unique.add(key);
+     if(!map.has(key))map.set(key,{key,name:label,count:0});
+     map.get(key).count++;
+   }
+ }
+ return [...map.values()].sort((a,b)=>b.count-a.count||a.name.localeCompare(b.name,"vi"));
+}
+const KNOWN_SKILLS_KEY="qa_job_tracker_self_assessed_skills_v1";
+const knownSkills=new Set();
+try{
+ if(typeof localStorage!=="undefined"){
+   const stored=JSON.parse(localStorage.getItem(KNOWN_SKILLS_KEY)||"[]");
+   if(Array.isArray(stored))stored.filter(x=>typeof x==="string").forEach(x=>knownSkills.add(x));
+ }
+}catch(e){console.warn("Cannot read local skill self-assessment:",e)}
+function saveKnownSkills(){
+ try{if(typeof localStorage!=="undefined")localStorage.setItem(KNOWN_SKILLS_KEY,JSON.stringify([...knownSkills]));}
+ catch(e){console.warn("Cannot save local skill self-assessment:",e)}
+}
+function comparisonBaseJobs(){return selectedJobs({ignoreExperience:true,ignoreSkill:true})}
+function percent(count,total){return total?Math.round(count*1000/total)/10:0}
+function renderComparison(){
+ const first=$("#compareA").value||"3",second=$("#compareB").value||"5";
+ const base=comparisonBaseJobs();
+ const a=base.filter(job=>experienceGroup(job.experience_text)===first);
+ const b=base.filter(job=>experienceGroup(job.experience_text)===second);
+ const labelA=EXPERIENCE_LABELS[first]||first,labelB=EXPERIENCE_LABELS[second]||second;
+ $("#compareHeadA").textContent=labelA+" ("+a.length+" JD)";
+ $("#compareHeadB").textContent=labelB+" ("+b.length+" JD)";
+ const summary=$("#compareSummary");
+ summary.textContent=labelA+": "+a.length+" JD · "+labelB+": "+b.length+" JD"+
+   (a.length<5||b.length<5?" · Lưu ý: ít nhất một nhóm dưới 5 JD, không đủ mẫu để kết luận xu hướng.":"")+
+   (first===second?" · Hãy chọn hai nhóm khác nhau để so sánh.":"");
+ const body=$("#compareRows");body.replaceChildren();
+ if(first===second||!a.length||!b.length){
+   const tr=document.createElement("tr"),td=document.createElement("td");
+   td.colSpan=4;td.textContent=first===second?"Vui lòng chọn hai nhóm kinh nghiệm khác nhau.":"Chưa đủ JD của cả hai nhóm trong phạm vi lọc này.";
+   tr.append(td);body.append(tr);return;
+ }
+ const freqA=new Map(skillFrequency(a).map(x=>[x.key,x]));
+ const freqB=new Map(skillFrequency(b).map(x=>[x.key,x]));
+ const union=new Set([...freqA.keys(),...freqB.keys()]);
+ const rows=[...union].map(key=>{
+   const x=freqA.get(key),y=freqB.get(key);
+   return {name:(y||x).name,a:x?.count||0,b:y?.count||0};
+ }).sort((x,y)=>y.b-x.b||y.a-x.a||x.name.localeCompare(y.name,"vi"));
+ for(const item of rows.slice(0,25)){
+   const tr=document.createElement("tr");
+   const rateA=percent(item.a,a.length),rateB=percent(item.b,b.length);
+   const diff=Math.round((rateB-rateA)*10)/10;
+   for(const label of [item.name,item.a+"/"+a.length+" JD ("+rateA+"%)",item.b+"/"+b.length+" JD ("+rateB+"%)",(diff>0?"+":"")+diff+" điểm %"]){
+     const td=document.createElement("td");td.textContent=label;tr.append(td);
+   }
+   body.append(tr);
+ }
+}
+function practiceIdea(skill){
+ const text=skill.toLowerCase();
+ if(/playwright|selenium|cypress|appium|robot framework|automation test|katalon/.test(text))
+   return"Tự động hóa một luồng mẫu, chạy lại và ghi nhận kết quả.";
+ if(/api|postman|rest|soap/.test(text))
+   return"Thực hành kiểm tra request/response, trạng thái lỗi và trường hợp biên.";
+ if(/sql|database|data\/etl/.test(text))
+   return"Viết truy vấn kiểm tra tính đúng đắn của dữ liệu trên bộ dữ liệu mẫu.";
+ if(/jira|testrail|test case|test plan|bug/.test(text))
+   return"Tạo test case, bug report và kiểm thử hồi quy trên dự án mẫu.";
+ if(/ci\/cd|github actions|jenkins|git|docker|aws|cloud/.test(text))
+   return"Tạo một bài thực hành nhỏ và ghi lại cách chạy/kiểm tra kết quả.";
+ if(/tiếng anh|english/.test(text))
+   return"Đọc và tóm tắt một tài liệu kỹ thuật bằng tiếng Anh.";
+ if(/performance|jmeter|k6/.test(text))
+   return"Tạo kịch bản đo thử đơn giản và phân tích kết quả.";
+ return"Tìm tài liệu chính thức, thực hành một ví dụ và tự kiểm tra kiến thức.";
+}
+function renderSkillGapAndRoadmap(){
+ const target=$("#targetExperience").value||"5";
+ const jobs=comparisonBaseJobs().filter(job=>experienceGroup(job.experience_text)===target);
+ const ranking=skillFrequency(jobs);
+ const listed=ranking.slice(0,25);
+ const summary=$("#gapSummary"),list=$("#gapList"),roadmap=$("#roadmap");
+ list.replaceChildren();roadmap.replaceChildren();
+ const label=EXPERIENCE_LABELS[target]||target;
+ if(!jobs.length||!ranking.length){
+   summary.textContent=label+": "+jobs.length+" JD; chưa có đủ nhãn kỹ năng từ Sheet để lập danh sách.";
+   roadmap.textContent="Chưa có dữ liệu kỹ năng phù hợp để gợi ý lộ trình.";return;
+ }
+ const marked=listed.filter(x=>knownSkills.has(x.key)).length;
+ summary.textContent="Nhóm "+label+": "+jobs.length+" JD · "+marked+"/"+listed.length+
+   " kỹ năng phổ biến đã tự đánh dấu biết."+
+   (ranking.length>25?" Hiển thị 25/"+ranking.length+" kỹ năng xuất hiện nhiều nhất.":"")+
+   (jobs.length<5?" Mẫu nhỏ, chỉ dùng để tham khảo.":"");
+ for(const entry of listed){
+   const labelEl=document.createElement("label");labelEl.className="gap-option";
+   const input=document.createElement("input");input.type="checkbox";input.checked=knownSkills.has(entry.key);
+   input.setAttribute("aria-label","Tôi đã biết "+entry.name);
+   input.addEventListener("change",()=>{
+     if(input.checked)knownSkills.add(entry.key);else knownSkills.delete(entry.key);
+     saveKnownSkills();renderSkillGapAndRoadmap();
+   });
+   const name=document.createElement("span");name.textContent=entry.name;
+   const info=document.createElement("small");info.className="gap-count";
+   info.textContent=entry.count+"/"+jobs.length+" JD ("+percent(entry.count,jobs.length)+"%)";
+   labelEl.append(input,name,info);list.append(labelEl);
+ }
+ const unmarked=listed.filter(x=>!knownSkills.has(x.key)).slice(0,6);
+ if(!unmarked.length){
+   roadmap.textContent="Bạn đã đánh dấu biết toàn bộ kỹ năng trong danh sách này. Hãy xem JD gốc và tự kiểm tra mức độ thành thạo.";return;
+ }
+ const stages=[
+   {name:"Ngày 1–30 · Kiến thức nền và thực hành",note:"Bắt đầu với các kỹ năng xuất hiện nhiều trong nhóm mục tiêu."},
+   {name:"Ngày 31–60 · Bài tập ứng dụng",note:"Thực hành và ghi lại kết quả để tự đánh giá."},
+   {name:"Ngày 61–90 · Dự án minh chứng",note:"Tổng hợp bài làm, kiểm tra lại phần chưa vững."}
+ ];
+ for(let i=0;i<stages.length;i++){
+   const items=unmarked.slice(i*2,i*2+2);
+   if(!items.length)continue;
+   const section=document.createElement("section");section.className="roadmap-stage";
+   const heading=document.createElement("h3");heading.textContent=stages[i].name;
+   const note=document.createElement("p");note.className="muted";note.textContent=stages[i].note;
+   const ol=document.createElement("ol");
+   for(const item of items){
+     const li=document.createElement("li");
+     const strong=document.createElement("strong");strong.textContent=item.name+" · "+item.count+"/"+jobs.length+" JD";
+     const activity=document.createElement("small");activity.textContent=practiceIdea(item.name);
+     li.append(strong,activity);ol.append(li);
+   }
+   section.append(heading,note,ol);roadmap.append(section);
+ }
+}
+function renderCareerInsights(){renderComparison();renderSkillGapAndRoadmap();}
+
+function selectedJobs({ignoreRole=false,ignoreSkill=false,ignoreExperience=false}={}){const r=$("#role").value,l=$("#location").value,region=$("#region").value,age=Number($("#age").value),experience=$("#experience").value;const cutoff=Date.now()-age*86400000;return all.filter(j=>(ignoreRole||!r||j.role===r)&&(ignoreSkill||!selectedSkill||(Array.isArray(j.skills)&&j.skills.includes(selectedSkill)))&&(ignoreExperience||!experience||experienceGroup(j.experience_text)===experience)&&(!l||j.location===l)&&(!region||j.market_region===region)&&(!age||(j.first_seen&&Number.isFinite(Date.parse(j.first_seen))&&Date.parse(j.first_seen)>=cutoff)))}
 function populate(){for(const [id,key] of [["#role","role"],["#location","location"]]){const sel=$(id);sel.replaceChildren(new Option(id==="#role"?"Tất cả vai trò":"Tất cả địa điểm",""));[...new Set(all.map(x=>x[key]).filter(Boolean))].sort().forEach(v=>sel.add(new Option(v,v)))}}
 function barChart(target,arr,{selected="",onSelect=null}={}){
  const el=$(target);el.replaceChildren();
@@ -166,10 +328,15 @@ function formatSalary(s){
 function render(){const data=selectedJobs();$("#jobs").textContent=data.length;$("#companies").textContent=new Set(data.map(j=>j.company)).size;$("#sources").textContent=new Set(data.map(j=>j.source)).size;$("#auto").textContent=(data.length?Math.round(data.filter(j=>["SDET","Automation QA"].includes(j.role)).length/data.length*100):0)+"%";barChart("#regions",counts(data.map(j=>j.market_region)));
 barChart("#roles",counts(selectedJobs({ignoreRole:true}).map(j=>j.role)),{selected:$("#role").value,onSelect:toggleRole});
 barChart("#skills",counts(selectedJobs({ignoreSkill:true}).flatMap(j=>j.skills)),{selected:selectedSkill,onSelect:toggleSkill});
+renderCareerInsights();
 const activeFilters=[($("#role").value?"Vai trò: "+$("#role").value:""),(selectedSkill?"Kỹ năng: "+selectedSkill:"")].filter(Boolean);
 $("#chartFilterStatus").hidden=!activeFilters.length;
 $("#activeChartFilters").textContent=activeFilters.length?"Đang lọc · "+activeFilters.join(" · "):"";const body=$("#records");body.replaceChildren();if(!data.length){const row=document.createElement("tr");const cell=document.createElement("td");cell.colSpan=10;cell.textContent="Không có JD phù hợp với bộ lọc. Hãy chọn kỹ năng/vai trò khác hoặc xóa lọc.";row.append(cell);body.append(row)}data.slice(0,500).forEach(j=>{const tr=document.createElement("tr");for(const v of [j.title,j.company,j.location,j.role,(j.experience_text||(j.ingested_from==="google_sheet"?"Chưa có trong Sheet":"Không công bố")),(j.salary_text||formatSalary(j.salary)),formatPosted(j),(j.skills_text||j.skills.join(", "))]){const td=document.createElement("td");td.textContent=v||"—";tr.append(td)}const sourceTd=document.createElement("td");if(/^https:\/\//i.test(j.url||"")){const sourceLink=document.createElement("a");sourceLink.href=j.url;sourceLink.target="_blank";sourceLink.rel="noopener noreferrer";sourceLink.className="source-link";sourceLink.title="Mở tin tuyển dụng gốc";sourceLink.textContent=j.source||"Mở nguồn";sourceTd.append(sourceLink)}else sourceTd.textContent=j.source||"—";tr.append(sourceTd);const linkTd=document.createElement("td");if(/^https:\/\//i.test(j.url||"")){const link=document.createElement("a");link.href=j.url;link.target="_blank";link.rel="noopener noreferrer";link.textContent="Mở JD";linkTd.append(link)}else linkTd.textContent="—";tr.append(linkTd);body.append(tr)});$("#dataStatus").textContent="Đang hiển thị "+data.length+" / "+all.length+" JD từ Google Sheet";}
 $("#role").addEventListener("change",render);
+$("#experience").addEventListener("change",render);
+$("#compareA").addEventListener("change",renderCareerInsights);
+$("#compareB").addEventListener("change",renderCareerInsights);
+$("#targetExperience").addEventListener("change",renderSkillGapAndRoadmap);
 $("#clearChartFilters").addEventListener("click",()=>{selectedSkill="";$("#role").value="";render();$("#clearChartFilters").blur()});$("#location").addEventListener("change",render);$("#region").addEventListener("change",render);$("#age").addEventListener("change",render);
 
 function escapeCsv(x){const s=String(x??"");return /[",\r\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s}
@@ -202,7 +369,7 @@ async function loadPublishedJobs(){
       market_region:marketRegion(j.location||""),
       skills_text:String(j.skills_text||""),
       sheet_source:String(j.sheet_source||""),
-      skills:Array.isArray(j.skills)?j.skills.filter(x=>typeof x==="string"):[]
+      skills:skillLabelsFromSheet(j)
     }));
     $("#notice").style.display="none";
     populate();render();
