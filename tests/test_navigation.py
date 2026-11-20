@@ -97,7 +97,7 @@ const document={
  createElement:t=>new Element(t)
 };
 const localStorage={getItem:()=>null,setItem:()=>{}};
-const ctx=vm.createContext({document,Date,Intl,Option:class{},console,URL,Blob,localStorage});
+const ctx=vm.createContext({document,Date,Intl,Option:class{},console,URL,Blob,localStorage,starters,tabs});
 vm.runInContext(process.argv[1],ctx);
 const steps=[
  'function assert(cond,msg){if(!cond)throw Error(msg)};',
