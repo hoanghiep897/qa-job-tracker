@@ -93,6 +93,7 @@ const execute=[
  'assert(experienceGroup("3-5 năm")==="other","No guessing from range");',
  'assert(experienceGroup("")==="unknown","Unknown stays unknown");',
  'assert(JSON.stringify(skillLabelsFromSheet({skills_text:"Playwright, SQL/Database, Playwright, Postman",skills:["INVENTED"]}))===JSON.stringify(["Playwright","SQL/Database","Postman"]),"Raw skills only, no fabricated skill");',
+ 'assert(skillLabelsFromSheet({skills_text:"",skills:["Playwright"]}).length===0,"No legacy inferred skills when Sheet is blank");',
  'const make=(exp,role,skills,company)=>({title:"QA",company,role,experience_text:exp,skills:skillLabelsFromSheet({skills_text:skills}),location:"Hà Nội",market_region:"Vietnam",source:"TopCV",url:"",first_seen:"2026-11-20T00:00:00+00:00"});',
  'all=[',
  'make("3 năm","Manual QA","Playwright, SQL/Database","A"),',
