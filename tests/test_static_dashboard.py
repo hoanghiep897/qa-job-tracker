@@ -63,15 +63,23 @@ class StaticDashboardTests(unittest.TestCase):
         self.assertIn("main{width:100%;max-width:1800px;", html)
         self.assertIn('<section class="card section jd-explorer">', html)
         self.assertIn(".jd-explorer table{width:100%;table-layout:fixed}", html)
-        self.assertIn("@media(max-width:1279px){.jd-explorer table{table-layout:auto;min-width:1150px}", html)
-        # Percent widths for all eleven columns must sum to 100%.
+        self.assertIn("@media(max-width:1279px){.jd-explorer table{table-layout:auto;min-width:1080px}", html)
+        # Percent widths for all ten columns must sum to 100%.
         import re
         widths = {int(n): int(p) for n, p in
                   re.findall(r"\.jd-explorer th:nth-child\((\d+)\)\{width:(\d+)%\}", html)}
-        self.assertEqual(set(widths), set(range(1, 12)))
+        self.assertEqual(set(widths), set(range(1, 11)))
         self.assertEqual(sum(widths.values()), 100)
         self.assertIn("<th>Link JD</th>", html)
         self.assertIn("<th>Nguồn</th>", html)
+
+    def test_application_deadline_is_not_rendered(self):
+        html = (ROOT / "index.html").read_text(encoding="utf-8")
+        self.assertNotIn("<th>Hạn ứng tuyển</th>", html)
+        self.assertNotIn("formatDate(j.application_deadline)", html)
+        self.assertNotIn("application_deadline:j.application_deadline", html)
+        self.assertIn("<th>Ngày đăng</th><th>Kỹ năng</th>", html)
+        self.assertIn("cell.colSpan=10", html)
 
     def test_interactive_role_skill_filters_are_wired(self):
         html = (ROOT / "index.html").read_text(encoding="utf-8")
@@ -86,7 +94,7 @@ class StaticDashboardTests(unittest.TestCase):
         self.assertIn('content.setAttribute("aria-pressed"', html)
         self.assertIn('content.addEventListener("click",()=>onSelect(name))', html)
         self.assertIn('selectedSkill="";$("#role").value="";render()', html)
-        self.assertIn('cell.colSpan=11', html)
+        self.assertIn('cell.colSpan=10', html)
         self.assertNotIn('id="reset"', html)
         self.assertNotIn('Dữ liệu demo</button>', html)
 
@@ -148,7 +156,7 @@ const demoActions = [
  'chartButton("#skills","SQL").listeners.click();',
  '$("#role").value="SDET";render();',
  'if(selectedJobs().length!==0)throw Error("Expected empty skill/role intersection");',
- 'if($("#records").children.length!==1||$("#records").children[0].children[0].colSpan!==11)throw Error("No empty-table state");',
+ 'if($("#records").children.length!==1||$("#records").children[0].children[0].colSpan!==10)throw Error("No empty-table state");',
  '$("#clearChartFilters").listeners.click();',
  'if(selectedJobs().length!==3||selectedSkill!==""||$("#role").value!=="")throw Error("Clear button failed");'
 ].join("\n");
