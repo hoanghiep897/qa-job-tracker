@@ -462,7 +462,18 @@ renderCareerInsights();renderWelcome();
 const activeFilters=[($("#role").value?"Vai trò: "+$("#role").value:""),(selectedSkill?"Kỹ năng: "+selectedSkill:"")].filter(Boolean);
 $("#chartFilterStatus").hidden=!activeFilters.length;
 $("#activeChartFilters").textContent=activeFilters.length?"Đang lọc · "+activeFilters.join(" · "):"";const body=$("#records");body.replaceChildren();if(!data.length){const row=document.createElement("tr");const cell=document.createElement("td");cell.colSpan=10;cell.textContent="Không có JD phù hợp với bộ lọc. Hãy chọn kỹ năng/vai trò khác hoặc xóa lọc.";row.append(cell);body.append(row)}data.slice(0,500).forEach(j=>{const tr=document.createElement("tr");for(const v of [j.title,j.company,j.location,j.role,(j.experience_text||(j.ingested_from==="google_sheet"?"Chưa có trong Sheet":"Không công bố")),(j.salary_text||formatSalary(j.salary)),formatPosted(j),(j.skills_text||j.skills.join(", "))]){const td=document.createElement("td");td.textContent=v||"—";tr.append(td)}const sourceTd=document.createElement("td");if(/^https:\/\//i.test(j.url||"")){const sourceLink=document.createElement("a");sourceLink.href=j.url;sourceLink.target="_blank";sourceLink.rel="noopener noreferrer";sourceLink.className="source-link";sourceLink.title="Mở tin tuyển dụng gốc";sourceLink.textContent=j.source||"Mở nguồn";sourceTd.append(sourceLink)}else sourceTd.textContent=j.source||"—";tr.append(sourceTd);const linkTd=document.createElement("td");if(/^https:\/\//i.test(j.url||"")){const link=document.createElement("a");link.href=j.url;link.target="_blank";link.rel="noopener noreferrer";link.textContent="Mở JD";linkTd.append(link)}else linkTd.textContent="—";tr.append(linkTd);body.append(tr)});$("#dataStatus").textContent="Đang hiển thị "+data.length+" / "+all.length+" JD từ Google Sheet";}
-document.querySelectorAll(".view-tab").forEach(tab=>tab.addEventListener("click",()=>showView(tab.id.slice(4))));
+document.querySelectorAll(".view-tab").forEach(tab=>{
+ tab.addEventListener("click",()=>showView(tab.id.slice(4)));
+ tab.addEventListener("keydown",event=>{
+   if(!["ArrowRight","ArrowLeft","Home","End"].includes(event.key))return;
+   event.preventDefault();
+   const current=VIEW_NAMES.indexOf(tab.id.slice(4));
+   const to=event.key==="Home"?0:event.key==="End"?VIEW_NAMES.length-1:
+     (current+(event.key==="ArrowRight"?1:-1)+VIEW_NAMES.length)%VIEW_NAMES.length;
+   showView(VIEW_NAMES[to]);
+   $("#tab-"+VIEW_NAMES[to]).focus();
+ });
+});
 document.querySelectorAll("[data-start]").forEach(button=>button.addEventListener("click",()=>openNextStep(button.dataset.start)));
 $("#welcomeExperience").addEventListener("change",renderWelcome);
 showView("overview");
