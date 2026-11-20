@@ -25,11 +25,23 @@ To inspect history locally: `sqlite3 data/jobs.sqlite3 'SELECT id, reference_at,
 
 ---
 
+## New first-visit layout (four task-based views)
+
+The production static dashboard has four client-side tabs to avoid dumping all analysis panels into a single page. **Bắt đầu** is shown by default with a clear short explanation, an experience target selector, a five-item skill preview and three actions. Those actions carry the selected experience target into **Khám phá JD** (exact-year filter), **So sánh kỹ năng** (second comparison cohort), or **Lộ trình upskill** (self-assessment target).
+
+- **Khám phá JD:** Current Google Sheet records, filters, JD Explorer, CSV export, and four KPI counters; the region/age selectors are tucked into a collapsed advanced-filter disclosure, and role/skill/region charts into a collapsed statistics disclosure. Interactive chart filtering still works when expanded.
+- **So sánh kỹ năng:** Focuses solely on source skill percentages by two experience levels; independent of hidden Explore filters.
+- **Lộ trình upskill:** Personal skill checklist and practice suggestions grouped by 30/60/90 days.
+
+Tabs are accessible buttons (click and keyboard arrow/Home/End) and do not fetch new data or require a database migration. All features continue using only the owner's Sheet-based `jobs.json` and optional browser-local self-assessment. No schema changes or scheduling changes.
+
+---
+
 ## Career & Skill Insights — frontend only
 
 The dashboard now helps compare explicit experience requirements for **3, 4, 5, and 6 years**, as well as other exact year values, `Trên 5 năm`, `Entry Level`, `Intermediate`, `Expert`, missing or unrecognized labels. These are **mutually separate buckets**: a range like `3-5 năm` and the phrase `Trên 5 năm` are never invented as a precise year.
 
-The **Yêu cầu kinh nghiệm** selector filters JD Explorer, bar charts, KPIs and downloaded CSV. The **So sánh kỹ năng theo kinh nghiệm** panel compares two independently selected cohorts (default 3 vs 5 years), using original comma-/semicolon-separated values from `Skill yêu cầu (cho CV)`, not inferred job-title tags. Counts are per distinct JD and percentages use *that cohort's* JD count as denominator. A difference in percentage points is descriptive only. For each cohort, the UI shows its JD sample count and warns when either group has fewer than five jobs. Comparisons respect the existing role, location, market and observation-age filters but ignore the JD Explorer's selected exact year and clicked skill to keep the two cohorts comparable.
+The **Yêu cầu kinh nghiệm** selector filters JD Explorer, bar charts, KPIs and downloaded CSV. The **So sánh kỹ năng theo kinh nghiệm** panel compares two independently selected cohorts (default 3 vs 5 years), using original comma-/semicolon-separated values from `Skill yêu cầu (cho CV)`, not inferred job-title tags. Counts are per distinct JD and percentages use *that cohort's* JD count as denominator. A difference in percentage points is descriptive only. For each cohort, the UI shows its JD sample count and warns when either group has fewer than five jobs. Comparisons use the entire current Sheet snapshot independently of all filters in the JD Explorer, so previously selected filters cannot silently alter the compared cohorts.
 
 **My Skill Gap** lets visitors self-report known skills with checkboxes, selected from the most frequent 25 skill labels for their selected experience target. Skills not checked mean **not self-assessed**, not proven missing. Answers are stored only in browser `localStorage` for that site and are never sent to GitHub, Google Sheet or the SQLite database. The **30/60/90-day learning roadmap** chooses up to six frequently mentioned skills not self-marked as known and proposes small practice tasks, clearly labeled as *suggestions*, not job responsibilities extracted from the original postings. No new columns or additional Google Sheet scraping are required.
 
