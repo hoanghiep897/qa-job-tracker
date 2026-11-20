@@ -25,6 +25,14 @@ To inspect history locally: `sqlite3 data/jobs.sqlite3 'SELECT id, reference_at,
 
 ---
 
+## Canonical location options
+
+The public `Địa điểm` dropdown and `JD Explorer` display use consistent Vietnamese city names. Alias spelling (e.g. `Ha Noi`, `Hanoi`, `Hà Nội`) maps to a single `Hà Nội` option; `Ho Chi Minh`, `Hồ Chí Minh (mới)` and `TP.HCM` map to `Hồ Chí Minh`. Other known cities are normalized similarly. A JD spanning two cities (regardless of order or connector such as `-` / `&`) is listed under **both** corresponding city filters, and its table cell shows the standardized locations. `Remote` stays a separate option. City aliases are also recognized as part of the Vietnam market region, including accented labels.
+
+This is a **frontend presentation and search filter normalization only**. The database and `jobs.json` preserve the exact location text supplied by the daily Google Sheet for auditability. Unrecognized places are not guessed or rewritten. No change to the 06:50 import, snapshot schema, JD links or source data is needed.
+
+---
+
 ## New first-visit layout (four task-based views)
 
 The production static dashboard has four client-side tabs to avoid dumping all analysis panels into a single page. **Bắt đầu** is shown by default with a clear short explanation, an experience target selector, a five-item skill preview and three actions. Those actions carry the selected experience target into **Khám phá JD** (exact-year filter), **So sánh kỹ năng** (second comparison cohort), or **Lộ trình upskill** (self-assessment target).
