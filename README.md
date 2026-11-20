@@ -5,7 +5,7 @@
 ### How the daily pipeline works
 
 1. Before **06:00 Vietnam time**, update the **same configured spreadsheet/tab** with the day's JD records.
-2. Around **07:00 Vietnam time**, GitHub Actions runs `.github/workflows/google-sheet-sync.yml`, reads the Sheet (public CSV or Google Sheets read-only service-account API), and validates its headers and links.
+2. Around **06:50 Vietnam time**, GitHub Actions runs `.github/workflows/google-sheet-sync.yml`, reads the Sheet (public CSV or Google Sheets read-only service-account API), and validates its headers and links.
 3. The standard-library **SQLite database** `data/jobs.sqlite3` stores an immutable observation row for every valid Sheet row in every import (including repeat jobs and updates), plus a current indexed jobs table. Removed jobs are retained in database history, but marked inactive.
 4. `data/jobs.json` is generated **only from the current SQLite jobs view**. The public Vercel site reads this JSON with no backend/database credentials. The initial migration discards old ATS records from the displayed snapshot while leaving earlier Git commits intact.
 5. On success GitHub Actions commits **both SQLite and the JSON snapshot**. On invalid, empty or inaccessible input, the job fails without publishing a new JSON or altering the committed DB. The existing Vercel deployment is static and reads fresh JSON from GitHub at page load.
@@ -14,7 +14,7 @@
 
 **Important limitations:** GitHub repositories are versioned storage, not a hosted SQL server. This is a genuine SQLite database file and works for this small daily dataset with no cloud DB account, but it grows with daily history and is committed to a **public GitHub repository**. Do not place confidential, private or personal data in job columns. For large-scale production data or server-side SQL queries, migrate to hosted PostgreSQL. The website **does not query SQLite directly** — it reads the JSON snapshot built from the database.
 
-**Daily "new Sheet":** Fully automatic operation assumes the owner **updates rows in the same Google spreadsheet/tab** each morning. Creating a completely new spreadsheet ID (or a new tab with a new gid) cannot be auto-discovered from the old link with CSV-only access. If replacing the file or tab daily, update `config/google_sheet.json` with the new ID/gid before 07:00, or keep reusing the fixed Sheet as an intake tab. Stale relative posting labels will otherwise be estimated against the wrong day's 06:00 reference.
+**Daily "new Sheet":** Fully automatic operation assumes the owner **updates rows in the same Google spreadsheet/tab** each morning. Creating a completely new spreadsheet ID (or a new tab with a new gid) cannot be auto-discovered from the old link with CSV-only access. If replacing the file or tab daily, update `config/google_sheet.json` with the new ID/gid before 06:50, or keep reusing the fixed Sheet as an intake tab. Stale relative posting labels will otherwise be estimated against the wrong day's 06:00 reference.
 
 To run locally (Python 3.11+, no database service needed):
 ```bash
