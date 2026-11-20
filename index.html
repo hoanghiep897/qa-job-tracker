@@ -26,13 +26,87 @@ button{padding:10px 15px;border:0;border-radius:9px;background:#175caa;color:whi
 .roadmap-stage li{margin:9px 0;font-size:13px;line-height:1.55}
 .roadmap-stage small{display:block;color:#687c91;font-size:12px}
 @media(max-width:580px){.insight-controls{grid-template-columns:1fr}}
+
+/* Task-based navigation keeps deep analyses off the welcome screen. */
+.view-tabs{display:flex;gap:7px;flex-wrap:wrap;padding:7px;background:#e9eff7;border-radius:14px;margin-bottom:14px}
+.view-tab{flex:1 1 155px;background:transparent;color:#40556f;padding:13px 15px;border:1px solid transparent;border-radius:10px;text-align:center}
+.view-tab:hover{background:#f9fbff}.view-tab[aria-selected="true"]{background:white;border-color:#d2deec;color:#164e8e;box-shadow:0 2px 8px #25466515}
+.view-tab:focus-visible,.journey-card:focus-visible,.start-action:focus-visible{outline:3px solid #176ab8;outline-offset:2px}
+.view-panel[hidden]{display:none!important}.view-panel{min-height:320px}
+.view-heading{margin:23px 0 18px}.view-heading h2{margin:0 0 8px;font-size:22px}.view-heading p{margin:0;color:#61738a;font-size:14px}
+.welcome-hero{border-radius:18px;background:linear-gradient(115deg,#123253,#1d5e9b);color:#fff;padding:34px 38px}
+.eyebrow{font-weight:700;letter-spacing:.11em;font-size:11px;color:#b1defb}
+.welcome-hero h2{max-width:700px;font-size:clamp(23px,2.6vw,34px);line-height:1.23;margin:11px 0 14px}
+.welcome-hero p{max-width:735px;color:#e1edfc;line-height:1.65;font-size:14px;margin:0 0 24px}
+.welcome-control{display:flex;flex-wrap:wrap;gap:12px;align-items:end}
+.welcome-control>div{min-width:200px;max-width:320px;flex:1}
+.welcome-control .field{color:#d4e9fa}.welcome-control select{background:#fff}
+.start-action{background:#fff;color:#124875;min-height:42px}
+.welcome-glance{display:grid;grid-template-columns:180px 1fr;gap:28px;margin-top:18px}
+.welcome-count{border-right:1px solid #dce6f0;display:flex;flex-direction:column;justify-content:center;gap:7px;padding-right:15px}
+.welcome-count strong{font-size:46px;line-height:1;font-variant-numeric:tabular-nums;color:#1557a0}
+.welcome-count span{color:#64748b;font-size:13px;line-height:1.5}
+.welcome-preview h3{font-size:15px;margin:0 0 12px}
+.welcome-skills{display:flex;gap:8px;flex-wrap:wrap}.welcome-skills span{font-size:12px;font-weight:600;border-radius:50px;background:#edf4fd;color:#245884;padding:7px 12px}
+.welcome-preview p{margin:11px 0 0}
+.journey-title{font-size:18px;margin:29px 0 14px}.journey-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.journey-card{display:flex;flex-direction:column;align-items:flex-start;gap:9px;text-align:left;padding:23px;border:1px solid #dce6f1;border-radius:14px;background:white;color:#182e46;box-shadow:0 3px 14px #223b5908}
+.journey-card:hover{border-color:#82b4df;transform:translateY(-1px)}.journey-card strong{font-size:16px}
+.journey-card span:last-child{font-size:13px;line-height:1.6;color:#61748a;font-weight:400}
+.journey-num{font-weight:800;color:#2178b3;font-size:12px;background:#e9f4fd;padding:7px 9px;border-radius:8px}
+.onboarding-note{margin-top:22px;line-height:1.7}
+.advanced-filter{grid-column:1/-1;border-top:1px solid #e9eef5;padding-top:10px}
+.advanced-filter summary,.chart-details summary{cursor:pointer;font-weight:650;color:#24557d;font-size:13px;padding:9px 0}
+.advanced-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;padding:12px 0 4px}
+.chart-details{margin-top:18px;padding:0 15px;border:1px solid #e1e7ef;background:white;border-radius:12px}
+.chart-details[open]{padding-bottom:16px}.chart-details>summary{padding:15px 2px;font-size:14px}
+.chart-details .panels{margin-top:14px}.chart-details .section{margin-top:14px}
+#view-explore .stats{margin-top:18px}
+#view-compare #careerComparison{margin:0}
+#view-roadmap #careerDevelopment{margin-top:0}
+@media(max-width:850px){.welcome-glance{grid-template-columns:145px 1fr}.journey-grid{grid-template-columns:1fr}}
+@media(max-width:580px){main{padding:16px 12px 35px}.view-tab{flex-basis:calc(50% - 7px);font-size:13px;padding:11px 6px}
+.welcome-hero{padding:25px 22px}.welcome-glance{grid-template-columns:1fr;gap:14px}
+.welcome-count{border-right:0;border-bottom:1px solid #dce6f0;padding-bottom:13px;flex-direction:row;align-items:center}
+.welcome-count strong{font-size:38px}.advanced-grid{grid-template-columns:1fr}}
+
 </style></head>
 <body><header><h1>QA Job Tracker <span style="font-weight:400;color:#7cc7fe">/ Market Insights</span></h1><p>Phân tích JD QA · Automation · SDET — miễn phí, không cần đăng nhập</p></header>
-<main><div class="notice" id="notice" role="status">Đang tải dữ liệu tuyển dụng từ Google Sheet…</div>
-<section class="toolbar card">
-<div><label class="field" for="role">Vai trò</label><select id="role"><option value="">Tất cả vai trò</option></select></div>
-<div><label class="field" for="location">Địa điểm</label><select id="location"><option value="">Tất cả địa điểm</option></select></div>
-<div><label class="field" for="region">Khu vực thị trường</label><select id="region"><option value="">Tất cả khu vực</option><option value="Vietnam">Việt Nam</option><option value="Southeast Asia">Đông Nam Á</option><option value="Remote / unspecified">Remote / không rõ</option><option value="Other / unspecified">Khác</option></select></div>
+<main>
+<div class="notice" id="notice" role="status">Đang tải dữ liệu tuyển dụng từ Google Sheet…</div>
+<nav class="view-tabs" role="tablist" aria-label="Các chức năng của QA Job Tracker">
+<button id="tab-overview" class="view-tab" role="tab" type="button" aria-controls="view-overview" aria-selected="true">Bắt đầu</button>
+<button id="tab-explore" class="view-tab" role="tab" type="button" aria-controls="view-explore" aria-selected="false">Khám phá JD</button>
+<button id="tab-compare" class="view-tab" role="tab" type="button" aria-controls="view-compare" aria-selected="false">So sánh kỹ năng</button>
+<button id="tab-roadmap" class="view-tab" role="tab" type="button" aria-controls="view-roadmap" aria-selected="false">Lộ trình upskill</button>
+</nav>
+<div id="dataStatus" aria-live="polite"></div>
+<section class="view-panel" id="view-overview" role="tabpanel" aria-labelledby="tab-overview">
+<div class="welcome-hero">
+<div class="eyebrow">BẮT ĐẦU TỪ MỤC TIÊU CỦA BẠN</div>
+<h2>Muốn lên trình QA/Automation? Hãy bắt đầu từ yêu cầu tuyển dụng.</h2>
+<p>Chọn mức kinh nghiệm bạn hướng tới. Website sẽ cho thấy các kỹ năng được nhắc tới trong JD của nhóm đó, rồi giúp bạn tìm JD gốc hoặc lên kế hoạch học.</p>
+<div class="welcome-control">
+<div><label class="field" for="welcomeExperience">Mốc kinh nghiệm mục tiêu</label>
+<select id="welcomeExperience"><option value="3">3 năm</option><option value="4">4 năm</option><option value="5" selected>5 năm</option><option value="6">6 năm</option><option value="2">2 năm</option><option value="over5">Trên 5 năm</option></select></div>
+<button type="button" class="start-action" data-start="explore">Xem JD phù hợp</button>
+</div>
+</div>
+<div class="welcome-glance card" aria-live="polite">
+<div class="welcome-count"><strong id="welcomeJobs">—</strong><span>JD trong nhóm kinh nghiệm này</span></div>
+<div class="welcome-preview"><h3>Top kỹ năng trong nhóm</h3><div id="welcomeSkills" class="welcome-skills"></div><p id="welcomeSampleNote" class="muted"></p></div>
+</div>
+<h2 class="journey-title">Bạn muốn làm gì tiếp theo?</h2>
+<div class="journey-grid">
+<button type="button" class="journey-card" data-start="explore"><span class="journey-num">01</span><strong>Xem JD thực tế</strong><span>Đọc yêu cầu, mức lương và mở link tuyển dụng gốc.</span></button>
+<button type="button" class="journey-card" data-start="compare"><span class="journey-num">02</span><strong>So sánh kỹ năng</strong><span>Đối chiếu kỹ năng giữa hai mốc kinh nghiệm.</span></button>
+<button type="button" class="journey-card" data-start="roadmap"><span class="journey-num">03</span><strong>Lên lộ trình học</strong><span>Đánh dấu kỹ năng đã biết và nhận gợi ý 30/60/90 ngày.</span></button>
+</div>
+<p class="muted onboarding-note">Chỉ sử dụng JD từ Google Sheet. Các kỹ năng là nội dung có trong Sheet, không suy diễn yêu cầu chuyên môn từ chức danh. Mẫu JD nhỏ chỉ mang tính tham khảo.</p>
+</section>
+<section class="view-panel" id="view-explore" role="tabpanel" aria-labelledby="tab-explore" hidden>
+<div class="view-heading"><h2>Khám phá JD tuyển dụng</h2><p>Chọn số năm kinh nghiệm và điều kiện cần xem. Mở từng JD để đối chiếu yêu cầu thực tế.</p></div>
+<section class="toolbar card" aria-label="Bộ lọc JD">
 <div><label class="field" for="experience">Yêu cầu kinh nghiệm</label><select id="experience">
 <option value="">Tất cả kinh nghiệm</option>
 <option value="3">3 năm</option><option value="4">4 năm</option><option value="5">5 năm</option><option value="6">6 năm</option>
@@ -40,14 +114,28 @@ button{padding:10px 15px;border:0;border-radius:9px;background:#175caa;color:whi
 <option value="entry">Entry Level</option><option value="intermediate">Intermediate</option><option value="expert">Expert</option>
 <option value="none">Không yêu cầu</option><option value="unknown">Không ghi kinh nghiệm</option><option value="other">Cách ghi khác / khoảng năm</option>
 </select></div>
-<div><label class="field" for="age">Thời gian quan sát lần đầu</label><select id="age"><option value="0">Tất cả</option><option value="7">7 ngày gần nhất</option><option value="30">30 ngày gần nhất</option></select></div>
-<div class="actions"><button id="export">Xuất CSV</button></div>
+<div><label class="field" for="role">Vai trò</label><select id="role"><option value="">Tất cả vai trò</option></select></div>
+<div><label class="field" for="location">Địa điểm</label><select id="location"><option value="">Tất cả địa điểm</option></select></div>
+<div class="actions"><button id="export" type="button">Xuất CSV đã lọc</button></div>
+<details class="advanced-filter">
+<summary>Bộ lọc nâng cao: khu vực và thời gian quan sát</summary>
+<div class="advanced-grid"><div><label class="field" for="region">Khu vực thị trường</label><select id="region"><option value="">Tất cả khu vực</option><option value="Vietnam">Việt Nam</option><option value="Southeast Asia">Đông Nam Á</option><option value="Remote / unspecified">Remote / không rõ</option><option value="Other / unspecified">Khác</option></select></div><div><label class="field" for="age">Thời gian quan sát lần đầu</label><select id="age"><option value="0">Tất cả</option><option value="7">7 ngày gần nhất</option><option value="30">30 ngày gần nhất</option></select></div></div>
+</details>
 </section>
-<div id="dataStatus" aria-live="polite"></div>
 <section class="stats"><div class="card"><div class="muted">JD quan sát</div><div class="metric" id="jobs">0</div></div><div class="card"><div class="muted">Doanh nghiệp</div><div class="metric" id="companies">0</div></div><div class="card"><div class="muted">Nguồn dữ liệu</div><div class="metric" id="sources">0</div></div><div class="card"><div class="muted">Automation + SDET</div><div class="metric" id="auto">0%</div></div></section>
+<details class="chart-details">
+<summary>Xem thống kê vai trò, kỹ năng và khu vực</summary>
+<section class="card section" style="margin-top:0;margin-bottom:20px"><h2>Phân bổ khu vực</h2><div id="regions"></div><p class="muted">Các tin tuyển dụng tại Đông Nam Á không nhất thiết chấp nhận ứng viên tại Việt Nam. Remote chưa chắc cho phép làm việc từ Việt Nam.</p></section>
+<section class="panels"><div class="card"><h2>Phân bổ vai trò</h2><p class="muted">Bấm vào một vai trò để lọc JD; bấm lại để bỏ chọn.</p><div id="roles"></div></div><div class="card"><h2>Kỹ năng xuất hiện trong JD</h2><p class="muted">Bấm vào một kỹ năng để lọc JD; có thể kết hợp với vai trò.</p><div id="skills"></div></div></section>
+</details>
+<div class="chart-filter-status" id="chartFilterStatus" aria-live="polite" hidden><span id="activeChartFilters"></span><button id="clearChartFilters" class="secondary" type="button">Xóa lọc vai trò / kỹ năng</button></div>
+<section class="card section jd-explorer"><h2>JD Explorer</h2><div class="scroll"><table><thead><tr><th>Chức danh</th><th>Công ty</th><th>Địa điểm</th><th>Vai trò</th><th>Kinh nghiệm / Level</th><th>Mức lương</th><th title="Ngày đăng từ Google Sheet; giá trị tương đối được quy đổi theo mốc thu thập 06:00 (ước tính)">Ngày đăng</th><th>Kỹ năng</th><th>Nguồn</th><th>Link JD</th></tr></thead><tbody id="records"></tbody></table></div></section>
+</section>
+<section class="view-panel" id="view-compare" role="tabpanel" aria-labelledby="tab-compare" hidden>
+<div class="view-heading"><h2>So sánh kỹ năng theo kinh nghiệm</h2><p>So sánh trực tiếp hai nhóm, có số JD làm mẫu và tỷ lệ xuất hiện của từng kỹ năng.</p></div>
 <section class="card section" id="careerComparison">
 <h2>So sánh kỹ năng theo kinh nghiệm</h2>
-<p class="muted">Đếm kỹ năng ghi trong cột “Skill yêu cầu (cho CV)” của từng JD. Tỷ lệ = số JD có kỹ năng / số JD trong nhóm. Hai nhóm so sánh độc lập với bộ lọc kinh nghiệm ở trên, nhưng vẫn chịu ảnh hưởng của vai trò, địa điểm, khu vực và thời gian quan sát.</p>
+<p class="muted">Đếm kỹ năng ghi trong cột “Skill yêu cầu (cho CV)” của từng JD. Tỷ lệ = số JD có kỹ năng / số JD trong nhóm. Số liệu lấy từ toàn bộ JD trong Google Sheet mới nhất, không phụ thuộc bộ lọc ở trang Khám phá JD. Hai nhóm kinh nghiệm được so sánh độc lập.</p>
 <div class="insight-controls">
 <div><label class="field" for="compareA">Nhóm thứ nhất</label><select id="compareA"><option value="3">3 năm</option><option value="4">4 năm</option><option value="5">5 năm</option><option value="6">6 năm</option><option value="2">2 năm</option><option value="1">1 năm</option><option value="over5">Trên 5 năm</option><option value="entry">Entry Level</option><option value="intermediate">Intermediate</option><option value="expert">Expert</option></select></div>
 <div><label class="field" for="compareB">Nhóm thứ hai</label><select id="compareB"><option value="5">5 năm</option><option value="3">3 năm</option><option value="4">4 năm</option><option value="6">6 năm</option><option value="2">2 năm</option><option value="1">1 năm</option><option value="over5">Trên 5 năm</option><option value="entry">Entry Level</option><option value="intermediate">Intermediate</option><option value="expert">Expert</option></select></div>
@@ -56,9 +144,9 @@ button{padding:10px 15px;border:0;border-radius:9px;background:#175caa;color:whi
 <div class="scroll"><table class="compare-table"><thead><tr><th>Kỹ năng ghi trong JD</th><th id="compareHeadA">Nhóm 1</th><th id="compareHeadB">Nhóm 2</th><th>Chênh lệch tỷ lệ</th></tr></thead><tbody id="compareRows"></tbody></table></div>
 <p class="muted">Mẫu nhỏ (dưới 5 JD) chỉ mang tính tham khảo. “Trên 5 năm” và các level bằng chữ không được tự quy đổi thành 6 năm hay một số năm cụ thể. Sự chênh lệch không chứng minh kỹ năng là yêu cầu bắt buộc.</p>
 </section>
-<section class="card section" style="margin-top:0;margin-bottom:20px"><h2>Phân bổ khu vực</h2><div id="regions"></div><p class="muted">Các tin tuyển dụng tại Đông Nam Á không nhất thiết chấp nhận ứng viên tại Việt Nam. Remote chưa chắc cho phép làm việc từ Việt Nam.</p></section>
-<section class="panels"><div class="card"><h2>Phân bổ vai trò</h2><p class="muted">Bấm vào một vai trò để lọc JD; bấm lại để bỏ chọn.</p><div id="roles"></div></div><div class="card"><h2>Kỹ năng xuất hiện trong JD</h2><p class="muted">Bấm vào một kỹ năng để lọc JD; có thể kết hợp với vai trò.</p><div id="skills"></div></div></section>
-<div class="chart-filter-status" id="chartFilterStatus" aria-live="polite" hidden><span id="activeChartFilters"></span><button id="clearChartFilters" class="secondary" type="button">Xóa lọc vai trò / kỹ năng</button></div>
+</section>
+<section class="view-panel" id="view-roadmap" role="tabpanel" aria-labelledby="tab-roadmap" hidden>
+<div class="view-heading"><h2>Định hướng upskill của bạn</h2><p>Chọn nhóm kinh nghiệm mục tiêu, tự đánh giá kỹ năng rồi xem gợi ý luyện tập.</p></div>
 <section class="panels section" id="careerDevelopment">
 <div class="card">
 <h2>My Skill Gap — đối chiếu với JD</h2>
@@ -73,7 +161,7 @@ button{padding:10px 15px;border:0;border-radius:9px;background:#175caa;color:whi
 <div id="roadmap" class="roadmap" aria-live="polite"></div>
 </div>
 </section>
-<section class="card section jd-explorer"><h2>JD Explorer</h2><div class="scroll"><table><thead><tr><th>Chức danh</th><th>Công ty</th><th>Địa điểm</th><th>Vai trò</th><th>Kinh nghiệm / Level</th><th>Mức lương</th><th title="Ngày đăng từ Google Sheet; giá trị tương đối được quy đổi theo mốc thu thập 06:00 (ước tính)">Ngày đăng</th><th>Kỹ năng</th><th>Nguồn</th><th>Link JD</th></tr></thead><tbody id="records"></tbody></table></div></section>
+</section>
 <footer>Dữ liệu được tổng hợp duy nhất từ Google Sheet do chủ dự án cập nhật, đồng bộ khoảng 06:50 mỗi ngày (giờ Việt Nam). SQLite lưu lịch sử, bảng hiển thị snapshot mới nhất. Không đại diện toàn bộ thị trường tuyển dụng.</footer>
 </main>
 <script>
@@ -133,7 +221,7 @@ function saveKnownSkills(){
  try{if(typeof localStorage!=="undefined")localStorage.setItem(KNOWN_SKILLS_KEY,JSON.stringify([...knownSkills]));}
  catch(e){console.warn("Cannot save local skill self-assessment:",e)}
 }
-function comparisonBaseJobs(){return selectedJobs({ignoreExperience:true,ignoreSkill:true})}
+function comparisonBaseJobs(){return all} // Comparison is independent of hidden Explore filters.
 function percent(count,total){return total?Math.round(count*1000/total)/10:0}
 function renderComparison(){
  const first=$("#compareA").value||"3",second=$("#compareB").value||"5";
@@ -245,6 +333,48 @@ function renderSkillGapAndRoadmap(){
 }
 function renderCareerInsights(){renderComparison();renderSkillGapAndRoadmap();}
 
+/* Welcome and task navigation: only one panel is visible at a time. */
+const VIEW_NAMES=["overview","explore","compare","roadmap"];
+let activeView="overview";
+function showView(name){
+ if(!VIEW_NAMES.includes(name))name="overview";
+ activeView=name;
+ for(const view of VIEW_NAMES){
+   const selected=view===name;
+   const panel=$("#view-"+view),tab=$("#tab-"+view);
+   panel.hidden=!selected;
+   tab.setAttribute("aria-selected",String(selected));
+   tab.tabIndex=selected?0:-1;
+ }
+}
+function renderWelcome(){
+ const year=$("#welcomeExperience").value||"5";
+ const sample=all.filter(job=>experienceGroup(job.experience_text)===year);
+ $("#welcomeJobs").textContent=sample.length;
+ const top=$("#welcomeSkills");top.replaceChildren();
+ for(const skill of skillFrequency(sample).slice(0,5)){
+   const el=document.createElement("span");
+   el.textContent=skill.name+" · "+skill.count+"/"+sample.length+" JD";
+   top.append(el);
+ }
+ if(!sample.length)top.textContent="Chưa có kỹ năng để thống kê trong nhóm này.";
+ $("#welcomeSampleNote").textContent=sample.length===0
+   ?"Chưa có JD trong Sheet cho mức "+(EXPERIENCE_LABELS[year]||year)+". Hãy chọn nhóm khác."
+   :sample.length<5?"Mẫu chỉ có "+sample.length+" JD, chưa đủ để kết luận xu hướng.":"Số liệu từ Google Sheet mới nhất; chỉ mang tính tham khảo.";
+}
+function openNextStep(name){
+ const year=$("#welcomeExperience").value||"5";
+ if(name==="explore")$("#experience").value=year;
+ if(name==="compare"){
+   $("#compareB").value=year;
+   $("#compareA").value=year==="3"?"5":"3";
+ }
+ if(name==="roadmap")$("#targetExperience").value=year;
+ render();
+ showView(name);
+}
+
+
 function selectedJobs({ignoreRole=false,ignoreSkill=false,ignoreExperience=false}={}){const r=$("#role").value,l=$("#location").value,region=$("#region").value,age=Number($("#age").value),experience=$("#experience").value;const cutoff=Date.now()-age*86400000;return all.filter(j=>(ignoreRole||!r||j.role===r)&&(ignoreSkill||!selectedSkill||(Array.isArray(j.skills)&&j.skills.includes(selectedSkill)))&&(ignoreExperience||!experience||experienceGroup(j.experience_text)===experience)&&(!l||j.location===l)&&(!region||j.market_region===region)&&(!age||(j.first_seen&&Number.isFinite(Date.parse(j.first_seen))&&Date.parse(j.first_seen)>=cutoff)))}
 function populate(){for(const [id,key] of [["#role","role"],["#location","location"]]){const sel=$(id);sel.replaceChildren(new Option(id==="#role"?"Tất cả vai trò":"Tất cả địa điểm",""));[...new Set(all.map(x=>x[key]).filter(Boolean))].sort().forEach(v=>sel.add(new Option(v,v)))}}
 function barChart(target,arr,{selected="",onSelect=null}={}){
@@ -328,10 +458,25 @@ function formatSalary(s){
 function render(){const data=selectedJobs();$("#jobs").textContent=data.length;$("#companies").textContent=new Set(data.map(j=>j.company)).size;$("#sources").textContent=new Set(data.map(j=>j.source)).size;$("#auto").textContent=(data.length?Math.round(data.filter(j=>["SDET","Automation QA"].includes(j.role)).length/data.length*100):0)+"%";barChart("#regions",counts(data.map(j=>j.market_region)));
 barChart("#roles",counts(selectedJobs({ignoreRole:true}).map(j=>j.role)),{selected:$("#role").value,onSelect:toggleRole});
 barChart("#skills",counts(selectedJobs({ignoreSkill:true}).flatMap(j=>j.skills)),{selected:selectedSkill,onSelect:toggleSkill});
-renderCareerInsights();
+renderCareerInsights();renderWelcome();
 const activeFilters=[($("#role").value?"Vai trò: "+$("#role").value:""),(selectedSkill?"Kỹ năng: "+selectedSkill:"")].filter(Boolean);
 $("#chartFilterStatus").hidden=!activeFilters.length;
 $("#activeChartFilters").textContent=activeFilters.length?"Đang lọc · "+activeFilters.join(" · "):"";const body=$("#records");body.replaceChildren();if(!data.length){const row=document.createElement("tr");const cell=document.createElement("td");cell.colSpan=10;cell.textContent="Không có JD phù hợp với bộ lọc. Hãy chọn kỹ năng/vai trò khác hoặc xóa lọc.";row.append(cell);body.append(row)}data.slice(0,500).forEach(j=>{const tr=document.createElement("tr");for(const v of [j.title,j.company,j.location,j.role,(j.experience_text||(j.ingested_from==="google_sheet"?"Chưa có trong Sheet":"Không công bố")),(j.salary_text||formatSalary(j.salary)),formatPosted(j),(j.skills_text||j.skills.join(", "))]){const td=document.createElement("td");td.textContent=v||"—";tr.append(td)}const sourceTd=document.createElement("td");if(/^https:\/\//i.test(j.url||"")){const sourceLink=document.createElement("a");sourceLink.href=j.url;sourceLink.target="_blank";sourceLink.rel="noopener noreferrer";sourceLink.className="source-link";sourceLink.title="Mở tin tuyển dụng gốc";sourceLink.textContent=j.source||"Mở nguồn";sourceTd.append(sourceLink)}else sourceTd.textContent=j.source||"—";tr.append(sourceTd);const linkTd=document.createElement("td");if(/^https:\/\//i.test(j.url||"")){const link=document.createElement("a");link.href=j.url;link.target="_blank";link.rel="noopener noreferrer";link.textContent="Mở JD";linkTd.append(link)}else linkTd.textContent="—";tr.append(linkTd);body.append(tr)});$("#dataStatus").textContent="Đang hiển thị "+data.length+" / "+all.length+" JD từ Google Sheet";}
+document.querySelectorAll(".view-tab").forEach(tab=>{
+ tab.addEventListener("click",()=>showView(tab.id.slice(4)));
+ tab.addEventListener("keydown",event=>{
+   if(!["ArrowRight","ArrowLeft","Home","End"].includes(event.key))return;
+   event.preventDefault();
+   const current=VIEW_NAMES.indexOf(tab.id.slice(4));
+   const to=event.key==="Home"?0:event.key==="End"?VIEW_NAMES.length-1:
+     (current+(event.key==="ArrowRight"?1:-1)+VIEW_NAMES.length)%VIEW_NAMES.length;
+   showView(VIEW_NAMES[to]);
+   $("#tab-"+VIEW_NAMES[to]).focus();
+ });
+});
+document.querySelectorAll("[data-start]").forEach(button=>button.addEventListener("click",()=>openNextStep(button.dataset.start)));
+$("#welcomeExperience").addEventListener("change",renderWelcome);
+showView("overview");
 $("#role").addEventListener("change",render);
 $("#experience").addEventListener("change",render);
 $("#compareA").addEventListener("change",renderCareerInsights);
