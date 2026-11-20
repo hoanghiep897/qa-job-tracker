@@ -170,7 +170,51 @@ function classify(title){if(/\bsdet\b|software development engineer in test/i.te
 let all=[];
 let selectedSkill="";
 const $=s=>document.querySelector(s);
-function marketRegion(loc){const p=String(loc||"").toLowerCase();if(/\b(?:viet\s?nam|ha\s?noi|hanoi|ho chi minh|hcmc|saigon|sai gon|da nang|danang)\b/.test(p))return"Vietnam";if(/\b(?:south\s?east asia|southeast asia|asean)\b/.test(p))return"Southeast Asia";if(/\b(?:any location|anywhere|worldwide|global|remote)\b/.test(p))return"Remote / unspecified";return"Other / unspecified"}
+/* Normalize display/filter values only. Preserve exact original Sheet location in job.location. */
+function foldLocation(value){
+ return String(value||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+   .replace(/[đĐ]/g,"d").toLowerCase().replace(/\s+/g," ").trim();
+}
+const LOCATION_NAMES={
+ "ha noi":"Hà Nội","hanoi":"Hà Nội","hn":"Hà Nội",
+ "ho chi minh":"Hồ Chí Minh","ho chi minh city":"Hồ Chí Minh",
+ "hcm":"Hồ Chí Minh","hcmc":"Hồ Chí Minh","tphcm":"Hồ Chí Minh",
+ "sai gon":"Hồ Chí Minh","saigon":"Hồ Chí Minh",
+ "da nang":"Đà Nẵng","danang":"Đà Nẵng",
+ "hai phong":"Hải Phòng","haiphong":"Hải Phòng",
+ "thai nguyen":"Thái Nguyên","quang tri":"Quảng Trị","lam dong":"Lâm Đồng",
+ "can tho":"Cần Thơ","binh duong":"Bình Dương","bac ninh":"Bắc Ninh",
+ "nghe an":"Nghệ An","khanh hoa":"Khánh Hòa","nha trang":"Nha Trang",
+ "hue":"Huế","da lat":"Đà Lạt","ba ria - vung tau":"Bà Rịa - Vũng Tàu",
+ "remote":"Remote","work from home":"Remote","wfh":"Remote",
+ "viet nam":"Việt Nam","vietnam":"Việt Nam"
+};
+const VIETNAM_LOCATIONS=new Set(Object.values(LOCATION_NAMES).filter(name=>name!=="Remote"));
+function canonicalLocationPart(value){
+ const original=String(value||"").trim().replace(/\s+/g," ");
+ const key=foldLocation(original)
+   .replace(/\s*\(\s*moi\s*\)\s*$/,"")
+   .replace(/^tp\.?\s*/,"").replace(/^thanh pho\s+/,"").trim();
+ return LOCATION_NAMES[key]||null;
+}
+function normalizeLocations(raw){
+ const input=String(raw||"").trim();
+ if(!input)return[];
+ // Check full location first so legitimate compound province names remain intact.
+ const full=canonicalLocationPart(input);
+ if(full)return[full];
+ const pieces=input.split(/\s+(?:[-–—&+|]|\/|,|và|and)\s+/i).map(x=>x.trim()).filter(Boolean);
+ const result=new Set(pieces.map(x=>canonicalLocationPart(x)||x.replace(/\s*\(\s*mới\s*\)\s*$/i,"").trim()));
+ return [...result].filter(Boolean).sort((a,b)=>a.localeCompare(b,"vi"));
+}
+function marketRegion(loc){
+ const locations=normalizeLocations(loc);
+ if(locations.some(name=>VIETNAM_LOCATIONS.has(name)))return"Vietnam";
+ const key=foldLocation(loc);
+ if(/\b(?:southeast asia|south east asia|asean)\b/.test(key))return"Southeast Asia";
+ if(locations.includes("Remote")||/\b(?:anywhere|worldwide|global|remote)\b/.test(key))return"Remote / unspecified";
+ return"Other / unspecified";
+}
 
 const EXPERIENCE_LABELS={"1":"1 năm","2":"2 năm","3":"3 năm","4":"4 năm","5":"5 năm","6":"6 năm","over5":"Trên 5 năm","entry":"Entry Level","intermediate":"Intermediate","expert":"Expert","none":"Không yêu cầu","unknown":"Không ghi","other":"Nhóm khác / khoảng năm"};
 function experienceGroup(raw){
@@ -375,8 +419,17 @@ function openNextStep(name){
 }
 
 
-function selectedJobs({ignoreRole=false,ignoreSkill=false,ignoreExperience=false}={}){const r=$("#role").value,l=$("#location").value,region=$("#region").value,age=Number($("#age").value),experience=$("#experience").value;const cutoff=Date.now()-age*86400000;return all.filter(j=>(ignoreRole||!r||j.role===r)&&(ignoreSkill||!selectedSkill||(Array.isArray(j.skills)&&j.skills.includes(selectedSkill)))&&(ignoreExperience||!experience||experienceGroup(j.experience_text)===experience)&&(!l||j.location===l)&&(!region||j.market_region===region)&&(!age||(j.first_seen&&Number.isFinite(Date.parse(j.first_seen))&&Date.parse(j.first_seen)>=cutoff)))}
-function populate(){for(const [id,key] of [["#role","role"],["#location","location"]]){const sel=$(id);sel.replaceChildren(new Option(id==="#role"?"Tất cả vai trò":"Tất cả địa điểm",""));[...new Set(all.map(x=>x[key]).filter(Boolean))].sort().forEach(v=>sel.add(new Option(v,v)))}}
+function selectedJobs({ignoreRole=false,ignoreSkill=false,ignoreExperience=false}={}){const r=$("#role").value,l=$("#location").value,region=$("#region").value,age=Number($("#age").value),experience=$("#experience").value;const cutoff=Date.now()-age*86400000;return all.filter(j=>(ignoreRole||!r||j.role===r)&&(ignoreSkill||!selectedSkill||(Array.isArray(j.skills)&&j.skills.includes(selectedSkill)))&&(ignoreExperience||!experience||experienceGroup(j.experience_text)===experience)&&(!l||(Array.isArray(j.locations)?j.locations:normalizeLocations(j.location)).includes(l))&&(!region||j.market_region===region)&&(!age||(j.first_seen&&Number.isFinite(Date.parse(j.first_seen))&&Date.parse(j.first_seen)>=cutoff)))}
+function populate(){
+ const roles=$("#role"),locations=$("#location");
+ roles.replaceChildren(new Option("Tất cả vai trò",""));
+ [...new Set(all.map(job=>job.role).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"vi"))
+   .forEach(name=>roles.add(new Option(name,name)));
+ locations.replaceChildren(new Option("Tất cả địa điểm",""));
+ const cities=new Set(all.flatMap(job=>Array.isArray(job.locations)?job.locations:normalizeLocations(job.location)));
+ [...cities].sort((a,b)=>a.localeCompare(b,"vi"))
+   .forEach(name=>locations.add(new Option(name,name)));
+}
 function barChart(target,arr,{selected="",onSelect=null}={}){
  const el=$(target);el.replaceChildren();
  if(!arr.length){el.textContent="Chưa có dữ liệu";return}
@@ -461,7 +514,7 @@ barChart("#skills",counts(selectedJobs({ignoreSkill:true}).flatMap(j=>j.skills))
 renderCareerInsights();renderWelcome();
 const activeFilters=[($("#role").value?"Vai trò: "+$("#role").value:""),(selectedSkill?"Kỹ năng: "+selectedSkill:"")].filter(Boolean);
 $("#chartFilterStatus").hidden=!activeFilters.length;
-$("#activeChartFilters").textContent=activeFilters.length?"Đang lọc · "+activeFilters.join(" · "):"";const body=$("#records");body.replaceChildren();if(!data.length){const row=document.createElement("tr");const cell=document.createElement("td");cell.colSpan=10;cell.textContent="Không có JD phù hợp với bộ lọc. Hãy chọn kỹ năng/vai trò khác hoặc xóa lọc.";row.append(cell);body.append(row)}data.slice(0,500).forEach(j=>{const tr=document.createElement("tr");for(const v of [j.title,j.company,j.location,j.role,(j.experience_text||(j.ingested_from==="google_sheet"?"Chưa có trong Sheet":"Không công bố")),(j.salary_text||formatSalary(j.salary)),formatPosted(j),(j.skills_text||j.skills.join(", "))]){const td=document.createElement("td");td.textContent=v||"—";tr.append(td)}const sourceTd=document.createElement("td");if(/^https:\/\//i.test(j.url||"")){const sourceLink=document.createElement("a");sourceLink.href=j.url;sourceLink.target="_blank";sourceLink.rel="noopener noreferrer";sourceLink.className="source-link";sourceLink.title="Mở tin tuyển dụng gốc";sourceLink.textContent=j.source||"Mở nguồn";sourceTd.append(sourceLink)}else sourceTd.textContent=j.source||"—";tr.append(sourceTd);const linkTd=document.createElement("td");if(/^https:\/\//i.test(j.url||"")){const link=document.createElement("a");link.href=j.url;link.target="_blank";link.rel="noopener noreferrer";link.textContent="Mở JD";linkTd.append(link)}else linkTd.textContent="—";tr.append(linkTd);body.append(tr)});$("#dataStatus").textContent="Đang hiển thị "+data.length+" / "+all.length+" JD từ Google Sheet";}
+$("#activeChartFilters").textContent=activeFilters.length?"Đang lọc · "+activeFilters.join(" · "):"";const body=$("#records");body.replaceChildren();if(!data.length){const row=document.createElement("tr");const cell=document.createElement("td");cell.colSpan=10;cell.textContent="Không có JD phù hợp với bộ lọc. Hãy chọn kỹ năng/vai trò khác hoặc xóa lọc.";row.append(cell);body.append(row)}data.slice(0,500).forEach(j=>{const tr=document.createElement("tr");for(const v of [j.title,j.company,(Array.isArray(j.locations)?j.locations:normalizeLocations(j.location)).join(" · ")||j.location,j.role,(j.experience_text||(j.ingested_from==="google_sheet"?"Chưa có trong Sheet":"Không công bố")),(j.salary_text||formatSalary(j.salary)),formatPosted(j),(j.skills_text||j.skills.join(", "))]){const td=document.createElement("td");td.textContent=v||"—";tr.append(td)}const sourceTd=document.createElement("td");if(/^https:\/\//i.test(j.url||"")){const sourceLink=document.createElement("a");sourceLink.href=j.url;sourceLink.target="_blank";sourceLink.rel="noopener noreferrer";sourceLink.className="source-link";sourceLink.title="Mở tin tuyển dụng gốc";sourceLink.textContent=j.source||"Mở nguồn";sourceTd.append(sourceLink)}else sourceTd.textContent=j.source||"—";tr.append(sourceTd);const linkTd=document.createElement("td");if(/^https:\/\//i.test(j.url||"")){const link=document.createElement("a");link.href=j.url;link.target="_blank";link.rel="noopener noreferrer";link.textContent="Mở JD";linkTd.append(link)}else linkTd.textContent="—";tr.append(linkTd);body.append(tr)});$("#dataStatus").textContent="Đang hiển thị "+data.length+" / "+all.length+" JD từ Google Sheet";}
 document.querySelectorAll(".view-tab").forEach(tab=>{
  tab.addEventListener("click",()=>showView(tab.id.slice(4)));
  tab.addEventListener("keydown",event=>{
@@ -500,6 +553,7 @@ async function loadPublishedJobs(){
       company:String(j.company||"Unknown"),
       title:String(j.title||""),
       location:String(j.location||""),
+      locations:normalizeLocations(j.location||""),
       url:String(j.url||""),
       role:String(j.role||classify(j.title||"")),
       first_seen:String(j.first_seen||""),
