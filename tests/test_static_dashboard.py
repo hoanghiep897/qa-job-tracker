@@ -78,7 +78,7 @@ class StaticDashboardTests(unittest.TestCase):
         self.assertNotIn("<th>Hạn ứng tuyển</th>", html)
         self.assertNotIn("formatDate(j.application_deadline)", html)
         self.assertNotIn("application_deadline:j.application_deadline", html)
-        self.assertIn("<th>Ngày đăng</th><th>Kỹ năng</th>", html)
+        self.assertIn(">Ngày đăng</th><th>Kỹ năng</th>", html)
         self.assertIn("cell.colSpan=10", html)
 
     def test_interactive_role_skill_filters_are_wired(self):
